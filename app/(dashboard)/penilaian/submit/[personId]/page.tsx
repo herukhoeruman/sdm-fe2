@@ -61,45 +61,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
     answers: [],
   });
 
-  const getQuestions = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await getData("/api/data/pertanyaan");
-      setPertanyaan(response?.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const getUserById = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await getData(`/api/data/personId/${params.personId}`);
-
-      setUserById(response?.data);
-      setUser({
-        ...user,
-        idUser: dataUser?.id,
-        emailUser: dataUser?.email,
-        idPerson: response?.data?.id,
-        emailPerson: response?.data?.email,
-        parent: response?.data?.parent,
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [params.personId, setUserById, user, dataUser]);
-
-  useEffect(() => {
-    getQuestions();
-    getUserById();
-  }, [getQuestions, getUserById]);
-
-  // const getQuestions = async () => {
+  // const getQuestions = useCallback(async () => {
   //   try {
   //     setIsLoading(true);
   //     const response = await getData("/api/data/pertanyaan");
@@ -109,9 +71,9 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   //   } finally {
   //     setIsLoading(false);
   //   }
-  // };
+  // }, []);
 
-  // const getUserById = async () => {
+  // const getUserById = useCallback(async () => {
   //   try {
   //     setIsLoading(true);
   //     const response = await getData(`/api/data/personId/${params.personId}`);
@@ -130,12 +92,50 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   //   } finally {
   //     setIsLoading(false);
   //   }
-  // };
+  // }, [params.personId, setUserById, user, dataUser]);
 
   // useEffect(() => {
   //   getQuestions();
   //   getUserById();
-  // }, [getQuestions, getUserById, params]);
+  // }, [getQuestions, getUserById]);
+
+  const getQuestions = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getData("/api/data/pertanyaan");
+      setPertanyaan(response?.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getUserById = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getData(`/api/data/personId/${params.personId}`);
+
+      setUserById(response?.data);
+      setUser({
+        ...user,
+        idUser: dataUser?.id,
+        emailUser: dataUser?.email,
+        idPerson: response?.data?.id,
+        emailPerson: response?.data?.email,
+        parent: response?.data?.parent,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getQuestions();
+    getUserById();
+  }, []);
 
   const handleAnswerClick = (
     pertanyaanId: number,
