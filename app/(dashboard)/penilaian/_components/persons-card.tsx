@@ -32,11 +32,11 @@ export const PersonsCard = ({ person }: PersonsCardProps) => {
       >
         <div className="inline-flex gap-[27px] justify-center items-center">
           <Image
-            alt="avatar"
+            alt={person.nama}
             src="/avatar.jpeg"
             width={90}
             height={90}
-            className="rounded-full"
+            className="rounded-full duration-700 ease-in-out scale-100 blur-0 grayscale-0 object-cover"
           />
           <div className="flex flex-col">
             <p className="font-bold">{person.nama}</p>

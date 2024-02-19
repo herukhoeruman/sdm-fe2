@@ -8,6 +8,7 @@ import { useSelector } from "@/lib/redux";
 import Loading from "@/app/loading";
 import { PersonsCard } from "./_components/persons-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SkeletonCard } from "./_components/skeleton-card";
 
 const PenilaianPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,20 +25,18 @@ const PenilaianPage = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
       }
     };
 
     getPersons();
   }, [data]);
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  if (isLoading) return <Loading />;
-
-  // return <div>{JSON.stringify(persons)}</div>;
+  if (isLoading) {
+    return <SkeletonCard />;
+  }
 
   return (
     <ScrollArea className="h-full">

@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SkeletonPenilaian } from "../../_components/skeleton-penilaian";
 
 interface Answer {
   pertanyaanId: number;
@@ -107,13 +108,15 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     }
   };
 
   const getUserById = async () => {
     try {
-      setIsLoading(true);
+      //setIsLoading(true);
       const response = await getData(`/api/data/personId/${params.personId}`);
 
       setUserById(response?.data);
@@ -128,7 +131,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      //setIsLoading(false);
     }
   };
 
@@ -136,6 +139,8 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
     getQuestions();
     getUserById();
   }, []);
+
+  if (isLoading) return <SkeletonPenilaian />;
 
   const handleAnswerClick = (
     pertanyaanId: number,
@@ -158,8 +163,6 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
       answers: updatedAnswers,
     });
   };
-
-  if (isLoading) return <Loading />;
 
   const handleSubmit = async () => {
     try {

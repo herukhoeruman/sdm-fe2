@@ -25,6 +25,8 @@ import { useSelector } from "@/lib/redux";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   tahun: z.string().min(1, { message: "Tahun tidak boleh kosong" }),
@@ -35,6 +37,8 @@ const FormSchema = z.object({
 export const ProsesPertanyaanForm = () => {
   const router = useRouter();
   const { data: me } = useSelector((state) => state.getme);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -47,7 +51,7 @@ export const ProsesPertanyaanForm = () => {
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      console.log(values);
+      setIsLoading(true);
       const token = sessionStorage.getItem("token");
 
       const response = await axios.put(
@@ -66,6 +70,8 @@ export const ProsesPertanyaanForm = () => {
     } catch (error) {
       console.log(error);
       toast.error("Gagal generate data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -106,6 +112,7 @@ export const ProsesPertanyaanForm = () => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={isLoading}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -122,7 +129,16 @@ export const ProsesPertanyaanForm = () => {
               )}
             />
           </div>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                Submit
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
