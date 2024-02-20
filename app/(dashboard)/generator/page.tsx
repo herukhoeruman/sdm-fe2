@@ -21,6 +21,7 @@ const PertanyaanPage = () => {
   // const data = await getDataPenilai();
 
   const [data, setData] = useState([]);
+  const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,14 +35,16 @@ const PertanyaanPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isSubmitSuccess]);
 
   return (
     <ScrollArea className="h-full">
       <div className="p-6 space-y-6">
         <p className="text-2xl font-medium">Generate penilai</p>
         <div className="border rounded-md p-3">
-          <ProsesPertanyaanForm />
+          <ProsesPertanyaanForm
+            onSubmitSuccess={() => setIsSubmitSuccess(true)}
+          />
         </div>
         <DataTable columns={columns} data={data} />
       </div>

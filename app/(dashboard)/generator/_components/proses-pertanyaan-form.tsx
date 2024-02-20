@@ -28,13 +28,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
+interface Props {
+  onSubmitSuccess: () => void;
+}
+
 const FormSchema = z.object({
   tahun: z.string().min(1, { message: "Tahun tidak boleh kosong" }),
   semester: z.string().min(1, { message: "Semester tidak boleh kosong" }),
   userId: z.number().min(1, { message: "User tidak boleh kosong" }),
 });
 
-export const ProsesPertanyaanForm = () => {
+export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
   const router = useRouter();
   const { data: me } = useSelector((state) => state.getme);
 
@@ -64,9 +68,10 @@ export const ProsesPertanyaanForm = () => {
         }
       );
 
-      router.push("/generator");
-      toast.success("Data generate data");
+      toast.success("Berhasil generate data");
       console.log(response);
+      onSubmitSuccess();
+      router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Gagal generate data");
@@ -75,10 +80,16 @@ export const ProsesPertanyaanForm = () => {
     }
   };
 
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => new Date().getFullYear() - i
-  );
+  // const years = Array.from(
+  //   { length: 5 },
+  //   (_, i) => new Date().getFullYear() - i
+  // );
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 7 }, (_, i) => currentYear - 3 + i);
+
+  years.sort((a, b) => b - a);
+
   const options = years.map((year) => ({
     value: year.toString(),
     label: year.toString(),
@@ -95,9 +106,24 @@ export const ProsesPertanyaanForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tahun</FormLabel>
-                  <FormControl>
-                    <Combobox options={options} {...field} />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={isLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih tahun" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
