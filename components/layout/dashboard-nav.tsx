@@ -38,6 +38,13 @@ const sdmRoutes: NavItem[] = [
     icon: "generate",
     label: "Generate Penilai",
   },
+
+  {
+    title: "Laporan",
+    href: "/laporan",
+    icon: "report",
+    label: "Laporan",
+  },
 ];
 
 export function DashboardNav({ items, setOpen }: DashboardNavProps) {

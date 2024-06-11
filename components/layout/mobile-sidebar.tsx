@@ -29,6 +29,7 @@ export function MobileSidebar({ className }: SidebarProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
+
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>

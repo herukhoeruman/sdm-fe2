@@ -37,6 +37,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  report: FileText,
   generate: FilePlus,
   penilaian: ListChecks,
   pertanyaan: MessageCircleQuestion,
