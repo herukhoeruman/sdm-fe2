@@ -39,6 +39,23 @@ export const columns: ColumnDef<EmployeeSum>[] = [
     },
   },
   {
+    accessorKey: "nama",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nama
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <p>{row.getValue("nama")}</p>;
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -93,6 +110,9 @@ export const columns: ColumnDef<EmployeeSum>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      return <div className="text-center">{row.getValue("levelSum")}</div>;
+    },
   },
   {
     accessorKey: "semester",
@@ -117,7 +137,7 @@ export const columns: ColumnDef<EmployeeSum>[] = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
+        <div className="flex items-center justify-center">
           {semester.icon && (
             <semester.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
@@ -141,6 +161,9 @@ export const columns: ColumnDef<EmployeeSum>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <div className="text-center">{row.getValue("levelSum")}</div>;
     },
   },
 ];

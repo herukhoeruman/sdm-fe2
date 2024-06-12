@@ -27,6 +27,7 @@ import {
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -76,7 +77,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-3">
-      <Button onClick={handleRowSelection}>Log selected rows</Button>
+      {/* <Button onClick={handleRowSelection}>Log selected rows</Button> */}
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
