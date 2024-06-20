@@ -116,7 +116,7 @@ export const columns: ColumnDef<EmployeeSum>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("levelSum")}</div>;
+      return <div className="text-center">{row.getValue("tahun")}</div>;
     },
   },
   {

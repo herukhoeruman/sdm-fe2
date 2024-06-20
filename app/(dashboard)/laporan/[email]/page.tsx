@@ -1,57 +1,31 @@
 "use client";
 
+import React from "react";
 import { useEffect, useState } from "react";
 
 import { getData } from "@/lib/fetcher";
-import {
-  Table,
-  TableCaption,
-  TableCell,
-  TableBody,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableCell, TableBody, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React from "react";
 
 export interface EmployeeDetail {
   namaKaryawan: string;
   jabatan: string;
   divisi: string;
-  kompetensiUtama: KompetensiUtama[];
-  kompetensiPeran: KompetensiPeran[];
-  jumlah: Jumlah;
-  nilai: Nilai;
-  totalNilai: TotalNilai;
+  kompetensiUtama: Kompetensi[];
+  kompetensiPeran: Kompetensi[];
+  jumlah: NilaiDetail;
+  nilai: NilaiDetail;
+  totalNilai: NilaiDetail;
   nilaiRataRata: number;
 }
 
-export interface KompetensiUtama {
+export interface Kompetensi {
   nama: string;
   deskripsi: string;
   nilai: number;
 }
 
-export interface KompetensiPeran {
-  nama: string;
-  deskripsi: string;
-  nilai: number;
-}
-
-export interface Jumlah {
-  nilai4: number;
-  nilai3: number;
-  nilai2: number;
-  nilai1: number;
-}
-
-export interface Nilai {
-  nilai4: number;
-  nilai3: number;
-  nilai2: number;
-  nilai1: number;
-}
-
-export interface TotalNilai {
+export interface NilaiDetail {
   nilai4: number;
   nilai3: number;
   nilai2: number;
@@ -68,7 +42,6 @@ const EmailPage = ({ params }: { params: { email: string } }) => {
           `/api/data/employeedetail?email=${params.email}`
         );
         setData(response?.data);
-        // console.log(response?.data);
       } catch (error) {
         console.log(error);
       }
@@ -81,8 +54,6 @@ const EmailPage = ({ params }: { params: { email: string } }) => {
     <ScrollArea className="h-full">
       <div className="p-6 space-y-6">
         <p className="text-2xl font-medium">Evaluasi Kompetensi </p>
-        {/* {data.map((employee, index) => (
-         */}
 
         {data.map((employee, index) => (
           <div className="my-10" key={index}>
