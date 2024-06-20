@@ -10,9 +10,9 @@ export const Sidebar = () => {
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
           <div className="space-y-1">
-            <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
+            {/* <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
               Overview
-            </h2>
+            </h2> */}
             <DashboardNav items={navItems} />
           </div>
         </div>

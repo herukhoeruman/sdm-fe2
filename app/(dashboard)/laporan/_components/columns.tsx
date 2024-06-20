@@ -6,6 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { semesters } from "./data-table-toolbar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EmployeeSum } from "../page";
+import Link from "next/link";
 
 export const columns: ColumnDef<EmployeeSum>[] = [
   {
@@ -52,7 +53,11 @@ export const columns: ColumnDef<EmployeeSum>[] = [
       );
     },
     cell: ({ row }) => {
-      return <p>{row.getValue("nama")}</p>;
+      return (
+        <Link href={`/laporan/${row.getValue("email")}`}>
+          {row.getValue("nama")}
+        </Link>
+      );
     },
   },
   {

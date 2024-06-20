@@ -28,7 +28,7 @@ export default function AuthenticationPage() {
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              Sistem Informasi Penilaian Individu (SINDI)
+              Sistem Informasi Penilaian Kompetensi Individu
             </p>
             <footer className="text-sm">PT. Gerbang Sinergi Prima</footer>
           </blockquote>
