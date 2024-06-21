@@ -42,7 +42,6 @@ const EmailPage = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(params);
         const response = await getData(
           `/api/data/employeedetail?email=${params.email}&tahun=${params.tahun}&semester=${params.semester}`
         );
@@ -98,8 +97,6 @@ const EmailPage = ({
                       Nilai Kompetensi
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                <TableBody>
                   <TableRow className="bg-zinc-100 dark:bg-zinc-900">
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">
@@ -118,10 +115,8 @@ const EmailPage = ({
                       4
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                {employee.kompetensiUtama.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <TableBody>
+                  {employee.kompetensiUtama.map((item, index) => (
+                    <React.Fragment key={index}>
                       <TableRow>
                         <TableCell className="border text-center">
                           {index + 1}
@@ -134,8 +129,6 @@ const EmailPage = ({
                         <TableCell className="border"></TableCell>
                         <TableCell className="border"></TableCell>
                       </TableRow>
-                    </TableBody>
-                    <TableBody>
                       <TableRow>
                         <TableCell className="border"></TableCell>
                         <TableCell className="border">
@@ -154,10 +147,8 @@ const EmailPage = ({
                           {item.nilai === 4 ? "✔️" : ""}
                         </TableCell>
                       </TableRow>
-                    </TableBody>
-                  </React.Fragment>
-                ))}
-                <TableBody>
+                    </React.Fragment>
+                  ))}
                   <TableRow className="bg-zinc-100 dark:bg-zinc-900">
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">
@@ -176,10 +167,8 @@ const EmailPage = ({
                       4
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                {employee.kompetensiPeran.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <TableBody>
+                  {employee.kompetensiPeran.map((item, index) => (
+                    <React.Fragment key={index}>
                       <TableRow>
                         <TableCell className="border text-center">
                           {index + 1}
@@ -192,8 +181,6 @@ const EmailPage = ({
                         <TableCell className="border"></TableCell>
                         <TableCell className="border"></TableCell>
                       </TableRow>
-                    </TableBody>
-                    <TableBody>
                       <TableRow>
                         <TableCell className="border"></TableCell>
                         <TableCell className="border">
@@ -212,10 +199,8 @@ const EmailPage = ({
                           {item.nilai === 4 ? "✔️" : ""}
                         </TableCell>
                       </TableRow>
-                    </TableBody>
-                  </React.Fragment>
-                ))}
-                <TableBody>
+                    </React.Fragment>
+                  ))}
                   <TableRow>
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">Jumlah</TableCell>
@@ -232,8 +217,6 @@ const EmailPage = ({
                       {employee.jumlah.nilai4}
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                <TableBody>
                   <TableRow>
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">Nilai</TableCell>
@@ -250,8 +233,6 @@ const EmailPage = ({
                       {employee.nilai.nilai4}
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                <TableBody>
                   <TableRow>
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">
@@ -270,8 +251,6 @@ const EmailPage = ({
                       {employee.totalNilai.nilai4}
                     </TableCell>
                   </TableRow>
-                </TableBody>
-                <TableBody>
                   <TableRow>
                     <TableCell className="border"></TableCell>
                     <TableCell className="border font-bold">
@@ -287,7 +266,6 @@ const EmailPage = ({
           </div>
         ))}
       </div>
-      {/* ))} */}
     </ScrollArea>
   );
 };

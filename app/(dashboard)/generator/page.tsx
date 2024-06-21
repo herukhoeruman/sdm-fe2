@@ -28,7 +28,7 @@ const PertanyaanPage = () => {
       try {
         const response = await getData(`/api/data/sdmShowProsess`);
         setData(response?.data || []);
-        console.log(response?.data);
+        // console.log(response?.data);
       } catch (error) {
         console.log(error);
         setData([]);

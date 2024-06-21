@@ -24,7 +24,7 @@ const LaporanPage = () => {
       try {
         const response = await getData(`/api/data/employeesum`);
 
-        console.log(response.data);
+        // console.log(response.data);
         setData(response?.data || []);
       } catch (error) {
         console.log(error);
