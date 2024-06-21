@@ -54,7 +54,11 @@ export const columns: ColumnDef<EmployeeSum>[] = [
     },
     cell: ({ row }) => {
       return (
-        <Link href={`/laporan/${row.getValue("email")}`}>
+        <Link
+          href={`/laporan/${row.getValue("email")}/${row.getValue(
+            "semester"
+          )}/${row.getValue("tahun")}`}
+        >
           <p className="text-blue-700 underline hover:cursor-pointer">
             {row.getValue("nama")}
           </p>

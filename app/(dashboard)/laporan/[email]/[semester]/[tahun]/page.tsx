@@ -32,14 +32,19 @@ export interface NilaiDetail {
   nilai1: number;
 }
 
-const EmailPage = ({ params }: { params: { email: string } }) => {
+const EmailPage = ({
+  params,
+}: {
+  params: { email: string; semester: string; tahun: string };
+}) => {
   const [data, setData] = useState<EmployeeDetail[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(params);
         const response = await getData(
-          `/api/data/employeedetail?email=${params.email}`
+          `/api/data/employeedetail?email=${params.email}&tahun=${params.tahun}&semester=${params.semester}`
         );
         setData(response?.data);
       } catch (error) {
