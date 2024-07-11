@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-3">
       {/* <Button onClick={handleRowSelection}>Log selected rows</Button> */}
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} data={data} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

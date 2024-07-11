@@ -1,15 +1,19 @@
 "use client";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { Tally1, Tally2 } from "lucide-react";
+import { FileText, Tally1, Tally2 } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  data: any[];
 }
 
 export const semesters = [
@@ -27,8 +31,49 @@ export const semesters = [
 
 export function DataTableToolbar<TData>({
   table,
+  data,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const handleExportPDF = async () => {
+    console.log("Exporting to PDF...");
+    console.log(JSON.stringify(data));
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Laporan Kinerja Karyawan", 14, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Diekspor pada: ${new Date().toLocaleString()}`, 14, 22);
+
+    doc.autoTable({
+      startY: 30,
+      head: [
+        [
+          "No.",
+          "Nama",
+          "Email",
+          "Divisi",
+          "Jabatan",
+          "Tahun",
+          "Semester",
+          "Level Sum",
+        ],
+      ],
+      body: data.map((item, index) => [
+        index + 1,
+        item.nama,
+        item.email,
+        item.divisi,
+        item.jabatan,
+        item.tahun,
+        item.semester,
+        item.levelSum,
+      ]),
+    });
+
+    doc.save(`laporan_penilaian_karyawan.pdf`);
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -60,6 +105,10 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
+      <Button onClick={handleExportPDF} size="sm" className="ml-2">
+        <FileText className="mr-2 h-4 w-4" />
+        Export to PDF
+      </Button>
     </div>
   );
 }
