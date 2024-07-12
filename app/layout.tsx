@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/layout/providers";
 import { ToasterProvider } from "@/components/providers/toaster-provider";
 import { ReduxProviders } from "@/components/providers/redux-provider";
+import { ModalPovider } from "@/components/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             storageKey="sdm-theme"
           >
             <ToasterProvider />
+            <ModalPovider />
             {children}
           </ThemeProvider>
         </ReduxProviders>

@@ -32,6 +32,7 @@ import {
   MessageCircleQuestion,
   ListChecks,
   FilePlus,
+  Users,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -61,6 +62,7 @@ export const Icons = {
   add: Plus,
   warning: AlertTriangle,
   user: User,
+  users: Users,
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,

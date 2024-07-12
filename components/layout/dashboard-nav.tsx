@@ -45,6 +45,12 @@ const sdmRoutes: NavItem[] = [
     icon: "report",
     label: "Laporan",
   },
+  {
+    title: "Pegawai",
+    href: "/pegawai",
+    icon: "users",
+    label: "Pegawai",
+  },
 ];
 
 export function DashboardNav({ items, setOpen }: DashboardNavProps) {

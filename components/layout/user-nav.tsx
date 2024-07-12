@@ -23,8 +23,6 @@ export const UserNav = () => {
 
   const { data, loading, error } = useSelector((state) => state.getme);
 
-  if (loading) return <Loading />;
-
   const logout = async () => {
     try {
       sessionStorage.removeItem("token");
