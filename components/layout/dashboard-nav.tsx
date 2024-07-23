@@ -53,6 +53,15 @@ const sdmRoutes: NavItem[] = [
   },
 ];
 
+const adminRoutes: NavItem[] = [
+  {
+    title: "Users",
+    href: "/users",
+    icon: "userCog",
+    label: "Users",
+  },
+];
+
 export function DashboardNav({ items, setOpen }: DashboardNavProps) {
   const path = usePathname();
   const router = useRouter();
@@ -127,8 +136,8 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
           );
         })}
 
-      {/* {isAdmin &&
-        items.map((item, index) => {
+      {isAdmin &&
+        adminRoutes.map((item, index) => {
           const Icon = Icons[item.icon || "arrowRight"];
           return (
             item.href && (
@@ -152,7 +161,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
               </Link>
             )
           );
-        })} */}
+        })}
     </nav>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { PegawaiModal } from "@/components/modals/pegawai-modal";
+import { UserModal } from "../modals/user-modal";
 
 export const ModalPovider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,6 +16,7 @@ export const ModalPovider = () => {
 
   return (
     <>
+      <UserModal />
       <PegawaiModal />
     </>
   );

@@ -33,6 +33,7 @@ import {
   ListChecks,
   FilePlus,
   Users,
+  UserCog,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -43,6 +44,7 @@ export const Icons = {
   penilaian: ListChecks,
   pertanyaan: MessageCircleQuestion,
   dashboard: LayoutDashboardIcon,
+  userCog: UserCog,
   logo: Command,
   login: LogIn,
   close: X,

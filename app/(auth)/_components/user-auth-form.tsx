@@ -75,7 +75,11 @@ export default function UserAuthForm() {
       router.push("/dashboard");
     } catch (error: any) {
       console.log(error);
-      setError(error.response.data.message || "Login failed");
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
     }

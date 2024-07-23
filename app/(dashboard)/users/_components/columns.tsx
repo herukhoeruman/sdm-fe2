@@ -1,26 +1,30 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CellAction } from "./cell-action";
 
-export interface Pegawai {
+export interface User {
   id: number;
-  email: string;
-  password: string;
   username: string;
-  parent: number;
-  divisi: string;
-  jabatan: string;
+  email: string;
+  roles: Role[];
   nama: string;
-  namaAtasan: string;
-  penilaian: number;
-  validasiSdm?: number;
+  jabatan: string;
+  divisi: string;
+  parent: number;
+  nama_atasan: string;
+  penilaian: boolean;
+  validasisdm: boolean;
 }
 
-export const columns: ColumnDef<Pegawai>[] = [
+export interface Role {
+  id: number;
+  name: string;
+}
+
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -84,7 +88,7 @@ export const columns: ColumnDef<Pegawai>[] = [
     },
   },
   {
-    accessorKey: "divisi",
+    accessorKey: "username",
     header: ({ column }) => {
       return (
         <Button
@@ -98,7 +102,7 @@ export const columns: ColumnDef<Pegawai>[] = [
     },
   },
   {
-    accessorKey: "jabatan",
+    accessorKey: "roles",
     header: ({ column }) => {
       return (
         <Button
@@ -108,6 +112,15 @@ export const columns: ColumnDef<Pegawai>[] = [
           Jabatan
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.original.roles.map((role) => (
+            <div key={role.id}>{role.name}</div>
+          ))}
+        </div>
       );
     },
   },
