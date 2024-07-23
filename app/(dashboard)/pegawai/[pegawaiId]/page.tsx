@@ -21,7 +21,7 @@ const PegawaiIdPage = ({ params }: { params: { pegawaiId: string } }) => {
     };
 
     fetchData();
-  }, []);
+  }, [params]);
 
   if (!data) {
     return <Loading />;

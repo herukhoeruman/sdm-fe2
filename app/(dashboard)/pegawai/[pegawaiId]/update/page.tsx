@@ -32,7 +32,7 @@ const UpdatePage = ({ params }: { params: { pegawaiId: string } }) => {
     };
 
     fetchData();
-  }, []);
+  }, [params, router]);
   return (
     <ScrollArea className="h-full">
       <div className="p-6 space-y-6">

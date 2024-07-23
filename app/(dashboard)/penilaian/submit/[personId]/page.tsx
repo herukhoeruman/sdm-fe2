@@ -138,7 +138,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   useEffect(() => {
     getQuestions();
     getUserById();
-  }, []);
+  }, [getQuestions, getUserById]);
 
   if (isLoading) return <SkeletonPenilaian />;
 

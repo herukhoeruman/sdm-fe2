@@ -7,7 +7,6 @@ import { getData } from "@/lib/fetcher";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/loading";
 import { User } from "../../_components/columns";
-import { FormCreateUser } from "../../_components/form/form-create-users";
 
 const UpdatePage = ({ params }: { params: { userId: string } }) => {
   const [isLoding, setIsLoding] = useState(false);
@@ -32,7 +31,7 @@ const UpdatePage = ({ params }: { params: { userId: string } }) => {
     };
 
     fetchData();
-  }, []);
+  }, [params]);
 
   return (
     <ScrollArea className="h-full">

@@ -56,7 +56,7 @@ const EmailPage = ({
     };
 
     fetchData();
-  }, []);
+  }, [params]);
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
