@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Authentication forms built using the components.",
+  description: "Login aplikasi Sistem Informasi Penilaian Kompetensi Individu",
 };
 
 export default function AuthenticationPage() {
