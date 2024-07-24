@@ -85,6 +85,7 @@ export const UserModal = () => {
         const response = await getData(`/api/data/user/roles`);
 
         setRoles(response?.data);
+        console.log(response?.data);
       } catch (error) {
         console.log(error);
         setRoles([]);

@@ -50,19 +50,6 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <DataTableViewOptions table={table} />
-      <Button
-        className="ml-2"
-        size="sm"
-        asChild
-        // onClick={() => {
-        //   pegawaiModal.onOpen();
-        // }}
-      >
-        <Link href="/pegawai/create">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Pegawai
-        </Link>
-      </Button>
     </div>
   );
 }

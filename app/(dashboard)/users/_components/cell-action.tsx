@@ -1,5 +1,5 @@
 "use client";
-import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, MoreHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 
 import {
@@ -9,16 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { BillboardColumn } from "./columns";
 import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import axios from "axios";
 import { AlertModal } from "@/components/modals/alert-modal";
-import Link from "next/link";
 import { useUserModal } from "@/hooks/use-user-modal";
 import { User } from "./columns";
-import { getData } from "@/lib/fetcher";
 
 interface CellActionProps {
   data: User;
@@ -26,11 +23,8 @@ interface CellActionProps {
 
 export const CellAction = ({ data }: CellActionProps) => {
   const router = useRouter();
-  const params = useParams();
 
   const userModal = useUserModal();
-
-  const [roles, setRoles] = useState<{ role: string }[]>([]);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,27 +57,6 @@ export const CellAction = ({ data }: CellActionProps) => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/data/user/roles`);
-
-        // wait data to be fetched
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        // change data
-
-        setRoles(response?.data);
-        console.log(response?.data);
-      } catch (error) {
-        console.log(error);
-        setRoles([]);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <>
       <AlertModal
@@ -101,12 +74,6 @@ export const CellAction = ({ data }: CellActionProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <Link href={`/pegawai/${data.id}`}>
-            <DropdownMenuItem>
-              <Eye className="w-4 h-4 mr-2" />
-              Detail
-            </DropdownMenuItem>
-          </Link>
           <DropdownMenuItem
             onClick={() => {
               userModal.onOpen(data);
@@ -114,10 +81,6 @@ export const CellAction = ({ data }: CellActionProps) => {
           >
             <Edit className="w-4 h-4 mr-2" />
             Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="w-4 h-4 mr-2" />
-            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
