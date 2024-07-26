@@ -100,20 +100,6 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   //   getUserById();
   // }, [getQuestions, getUserById]);
 
-  const getQuestions = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getData("/api/data/pertanyaan");
-      setPertanyaan(response?.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-    }
-  };
-
   const getUserById = async () => {
     try {
       //setIsLoading(true);
@@ -136,9 +122,43 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   };
 
   useEffect(() => {
+    const getQuestions = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getData("/api/data/pertanyaan");
+        setPertanyaan(response?.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      }
+    };
     getQuestions();
+
+    const getUserById = async () => {
+      try {
+        //setIsLoading(true);
+        const response = await getData(`/api/data/personId/${params.personId}`);
+
+        setUserById(response?.data);
+        setUser({
+          ...user,
+          idUser: dataUser?.id,
+          emailUser: dataUser?.email,
+          idPerson: response?.data?.id,
+          emailPerson: response?.data?.email,
+          parent: response?.data?.parent,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        //setIsLoading(false);
+      }
+    };
     getUserById();
-  }, [getQuestions, getUserById]);
+  }, []);
 
   if (isLoading) return <SkeletonPenilaian />;
 
