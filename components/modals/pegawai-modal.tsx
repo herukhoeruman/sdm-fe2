@@ -1,10 +1,8 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { usePegawaiModal } from "@/hooks/use-pegawai-modal";
@@ -18,7 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
+import { useCreateStoreMutation } from "@/lib/redux";
 
 const formSchema = z.object({
   nama: z.string().min(1, { message: "nama tidak boleh kosong" }),
@@ -35,7 +35,7 @@ const formSchema = z.object({
 
 export const PegawaiModal = () => {
   const pegawaiModal = usePegawaiModal();
-  const [loading, setLoading] = useState(false);
+  const [createStore, { isLoading: loading }] = useCreateStoreMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,19 +55,14 @@ export const PegawaiModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setLoading(true);
-      // throw new Error("Something went wrong!");
-
-      const response = await axios.post("/api/stores", values);
-      window.location.assign(`/${response.data.id}`);
+      const response = await createStore(values).unwrap();
+      window.location.assign(`/${response.id}`);
 
       toast.success("Store created successfully!");
       // console.log(response.data);
     } catch (error) {
       // console.log(error);
       toast.error("Something went wrong!");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -123,10 +118,9 @@ export const PegawaiModal = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         disabled={loading}
                         placeholder="Password Pegawai"
-                        type="password"
                         {...field}
                       />
                     </FormControl>

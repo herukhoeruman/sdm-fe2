@@ -1,8 +1,6 @@
 "use client";
 
-import axios from "axios";
-import useSWR from "swr";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Card,
@@ -13,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Loading from "@/app/loading";
-import { getData } from "@/lib/fetcher";
+import { useGetQuestionsQuery } from "@/lib/redux";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -22,25 +20,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const SubmitPage = () => {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [pertanyaan, setPertanyaan] = useState([]);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-
-  useEffect(() => {
-    getQuestions();
-  }, []);
-
-  const getQuestions = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getData("/api/data/pertanyaan");
-      setPertanyaan(response?.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data: pertanyaan = [], isLoading } = useGetQuestionsQuery();
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
   if (isLoading) return <Loading />;
 
@@ -69,7 +50,7 @@ const SubmitPage = () => {
         /> */}
         </div>
         <div className="grid grid-cols-1 mt-16 gap-6">
-          {pertanyaan.map((item: any) => (
+          {pertanyaan.map((item) => (
             <Card key={item.id}>
               <CardHeader>
                 <CardTitle> {item.jenis} </CardTitle>
@@ -83,7 +64,7 @@ const SubmitPage = () => {
                     <p className="my-2 text-xs mx-2">Pilih jawaban</p>
                     <div className="border-b w-auto grow dark:border-white/5" />
                   </div>
-                  {item.jawabanSet.map((jawaban: any, index: any) => (
+                  {item.jawabanSet.map((jawaban, index) => (
                     <div
                       className="grid grid-cols-1 gap-4 hover:bg-zinc-100 dark:hover:text-black  p-3 rounded-md"
                       key={jawaban.id}

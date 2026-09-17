@@ -1,15 +1,18 @@
 "use client";
 
-import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import Loading from "@/app/loading";
-import { useSelector } from "@/lib/redux";
-import { getData, postData } from "@/lib/fetcher";
+import {
+  useGetMeQuery,
+  useGetPersonByIdQuery,
+  useGetQuestionsQuery,
+  useSubmitAnswersMutation,
+  type AssessmentPayload,
+} from "@/lib/redux";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,38 +25,17 @@ import {
 } from "@/components/ui/card";
 import { SkeletonPenilaian } from "../../_components/skeleton-penilaian";
 
-interface Answer {
-  pertanyaanId: number;
-  jawabanId: number;
-  level: number;
-}
-
-interface UserData {
-  idUser: number | undefined;
-  idPerson: number;
-  emailUser: string | undefined;
-  emailPerson: string;
-  parent: number;
-  answers: Answer[];
-}
-
-interface User {
-  id: number;
-  nama: string;
-  email: string;
-  jabatan: string;
-  divisi: string;
-}
-
 const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [pertanyaan, setPertanyaan] = useState([]);
-  const [userById, setUserById] = useState<User>();
-  const { data: dataUser } = useSelector((state) => state.getme);
+  const { data: pertanyaan = [], isLoading: isQuestionsLoading } = useGetQuestionsQuery();
+  const { data: userById, isLoading: isPersonLoading } = useGetPersonByIdQuery(
+    params.personId
+  );
+  const { data: dataUser } = useGetMeQuery();
+  const [submitAnswers, { isLoading: isSubmitting }] = useSubmitAnswersMutation();
 
-  const [user, setUser] = useState<UserData>({
+  const [user, setUser] = useState<AssessmentPayload>({
     idUser: dataUser?.id,
     emailUser: dataUser?.email,
     idPerson: 0,
@@ -62,105 +44,19 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
     answers: [],
   });
 
-  // const getQuestions = useCallback(async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await getData("/api/data/pertanyaan");
-  //     setPertanyaan(response?.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, []);
-
-  // const getUserById = useCallback(async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await getData(`/api/data/personId/${params.personId}`);
-
-  //     setUserById(response?.data);
-  //     setUser({
-  //       ...user,
-  //       idUser: dataUser?.id,
-  //       emailUser: dataUser?.email,
-  //       idPerson: response?.data?.id,
-  //       emailPerson: response?.data?.email,
-  //       parent: response?.data?.parent,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [params.personId, setUserById, user, dataUser]);
-
-  // useEffect(() => {
-  //   getQuestions();
-  //   getUserById();
-  // }, [getQuestions, getUserById]);
-
-  const getUserById = async () => {
-    try {
-      //setIsLoading(true);
-      const response = await getData(`/api/data/personId/${params.personId}`);
-
-      setUserById(response?.data);
-      setUser({
-        ...user,
-        idUser: dataUser?.id,
-        emailUser: dataUser?.email,
-        idPerson: response?.data?.id,
-        emailPerson: response?.data?.email,
-        parent: response?.data?.parent,
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      //setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    const getQuestions = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getData("/api/data/pertanyaan");
-        setPertanyaan(response?.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      }
-    };
-    getQuestions();
+    if (!userById || !dataUser) return;
+    setUser((current) => ({
+      ...current,
+      idUser: dataUser.id,
+      emailUser: dataUser.email,
+      idPerson: userById.id,
+      emailPerson: userById.email,
+      parent: userById.parent,
+    }));
+  }, [dataUser, userById]);
 
-    const getUserById = async () => {
-      try {
-        //setIsLoading(true);
-        const response = await getData(`/api/data/personId/${params.personId}`);
-
-        setUserById(response?.data);
-        setUser({
-          ...user,
-          idUser: dataUser?.id,
-          emailUser: dataUser?.email,
-          idPerson: response?.data?.id,
-          emailPerson: response?.data?.email,
-          parent: response?.data?.parent,
-        });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        //setIsLoading(false);
-      }
-    };
-    getUserById();
-  }, []);
-
-  if (isLoading) return <SkeletonPenilaian />;
+  if (isQuestionsLoading || isPersonLoading) return <SkeletonPenilaian />;
 
   const handleAnswerClick = (
     pertanyaanId: number,
@@ -190,17 +86,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
         return toast.error("Mohon menjawab semua pertanyaan!");
       }
 
-      const token = sessionStorage.getItem("token");
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/api/data/jawaban`,
-        { data: user },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response);
+      await submitAnswers({ data: user }).unwrap();
       toast.success("Jawaban berhasil disimpan");
       router.push("/penilaian");
     } catch (error) {
@@ -236,7 +122,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
             <p>{userById?.nama}</p>
             <p>{userById?.divisi}</p>
           </div>
-          {pertanyaan.map((item: any, index) => (
+          {pertanyaan.map((item, index) => (
             <Card key={item.id}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -255,7 +141,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                     <p className="my-2 text-xs mx-2">Pilih jawaban</p>
                     <div className="border-b w-auto grow dark:border-white/2" />
                   </div>
-                  {item.jawabanSet.map((jawaban: any, index: any) => (
+                  {item.jawabanSet.map((jawaban, index) => (
                     <div
                       key={jawaban.id}
                       className="grid grid-cols-1 gap-4 hover:bg-zinc-100 dark:hover:bg-zinc-800 p-3 rounded-md"
@@ -297,7 +183,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
               className="bg-blue-950 hover:bg-blue-900 dark:text-white w-full md:w-auto"
               onClick={handleSubmit}
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 <Loader2 className="animate-spin w-4 h-4" />
               ) : (
                 "Submit Jawaban"

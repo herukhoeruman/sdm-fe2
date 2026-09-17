@@ -1,8 +1,6 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
@@ -16,18 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Pegawai } from "../columns";
-import { getData } from "@/lib/fetcher";
-import { cn } from "@/lib/utils";
 import { Combobox } from "@/components/ui/combobox";
 import {
   Select,
@@ -36,6 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  useCreatePegawaiMutation,
+  useGetPegawaiQuery,
+  useUpdatePegawaiMutation,
+} from "@/lib/redux";
 
 interface FormCreatePegawaiProps {
   initialData: Pegawai | null;
@@ -55,25 +52,12 @@ const formSchema = z.object({
 });
 
 export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Pegawai[]>([]);
+  const { data = [] } = useGetPegawaiQuery();
+  const [createPegawai, createState] = useCreatePegawaiMutation();
+  const [updatePegawai, updateState] = useUpdatePegawaiMutation();
+  const loading = createState.isLoading || updateState.isLoading;
 
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/pegawai`);
-
-        setData(response?.data || []);
-      } catch (error) {
-        console.log(error);
-        setData([]);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const options = data.map((pegawai) => ({
     value: pegawai.id.toString(),
@@ -102,33 +86,10 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       // console.log(values);
-      setLoading(true);
-      const token = sessionStorage.getItem("token");
-
       if (!initialData) {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API}/api/pegawai`,
-          values,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        console.log(response);
+        await createPegawai(values).unwrap();
       } else {
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API}/api/pegawai/${initialData.id}`,
-          values,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        console.log(response);
+        await updatePegawai({ id: initialData.id, body: values }).unwrap();
       }
 
       toast.success(toastMessage);
@@ -138,8 +99,6 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
     } catch (error) {
       console.log(error);
       toast.error("Gagal generate data");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -210,10 +169,9 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
+                  <PasswordInput
                     disabled={loading}
                     placeholder="Password Pegawai"
-                    type="password"
                     {...field}
                   />
                 </FormControl>

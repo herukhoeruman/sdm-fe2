@@ -1,7 +1,6 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,12 +19,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import toast from "react-hot-toast";
-
-interface Response {
-  id: string;
-  name: string;
-}
+import { setToken, useDispatch, useSignInMutation } from "@/lib/redux";
 
 const formSchema = z.object({
   username: z.string().min(1, { message: "Username tidak boleh kosong" }),
@@ -37,6 +33,8 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  const [signIn, { isLoading: loading }] = useSignInMutation();
 
   useEffect(() => {
     if (searchParams.get("error") === "tokenExpired") {
@@ -44,7 +42,6 @@ export default function UserAuthForm() {
     }
   }, [searchParams]);
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -60,28 +57,15 @@ export default function UserAuthForm() {
     try {
       setError("");
       setSuccess("");
-      setLoading(true);
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/api/auth/signin`,
-        values
-      );
-
-      const token = response.data.token;
-      sessionStorage.setItem("token", token);
+      const response = await signIn(values).unwrap();
+      dispatch(setToken(response.token));
 
       setSuccess("Login success");
 
       router.push("/dashboard");
     } catch (error: any) {
-      console.log(error);
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError(error.message);
-      }
-    } finally {
-      setLoading(false);
+      const message = error?.data?.message ?? error?.error ?? "Login gagal";
+      setError(message);
     }
   };
 
@@ -122,8 +106,7 @@ export default function UserAuthForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
+                  <PasswordInput
                     placeholder="******"
                     disabled={loading}
                     {...field}
@@ -137,7 +120,8 @@ export default function UserAuthForm() {
           <FormSuccess message={success} />
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
+            Login
+            {loading && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
           </Button>
           {/* <Button onClick={onClick}>Get Token</Button> */}
         </form>

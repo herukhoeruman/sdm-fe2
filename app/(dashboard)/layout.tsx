@@ -3,19 +3,21 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { fetchGetme, useDispatch } from "@/lib/redux";
+import { clearToken, useDispatch, useGetMeQuery } from "@/lib/redux";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { isError } = useGetMeQuery();
 
   useEffect(() => {
-    dispatch(fetchGetme());
-  }, [dispatch]);
+    if (isError) {
+      dispatch(clearToken());
+      router.replace("/?error=tokenExpired");
+    }
+  }, [dispatch, isError, router]);
 
   return (
     <>

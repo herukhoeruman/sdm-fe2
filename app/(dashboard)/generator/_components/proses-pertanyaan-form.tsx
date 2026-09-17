@@ -19,11 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSelector } from "@/lib/redux";
-import axios from "axios";
+import { useGenerateSdmProcessMutation, useGetMeQuery } from "@/lib/redux";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -33,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { useEffect } from "react";
 
 interface Props {
   onSubmitSuccess: () => void;
@@ -49,9 +48,8 @@ const FormSchema = z.object({
 
 export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
   const router = useRouter();
-  const { data: me } = useSelector((state) => state.getme);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: me } = useGetMeQuery();
+  const [generateSdmProcess, { isLoading }] = useGenerateSdmProcessMutation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,30 +61,20 @@ export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
     },
   });
 
+  useEffect(() => {
+    if (me?.id) form.setValue("userId", me.id);
+  }, [form, me?.id]);
+
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      setIsLoading(true);
-      const token = sessionStorage.getItem("token");
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API}/api/data/sdmProsess`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await generateSdmProcess(values).unwrap();
 
       toast.success("Berhasil generate data");
-      console.log(response);
       onSubmitSuccess();
       router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Gagal generate data");
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -5,13 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { semesters } from "./data-table-toolbar";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { SdmProcessResponse } from "@/lib/redux";
 
-export type Penilai = {
-  email: string;
-  tahun: string;
-  semester: string;
-  tanggal: string;
-};
+export type Penilai = SdmProcessResponse;
 
 export const columns: ColumnDef<Penilai>[] = [
   {

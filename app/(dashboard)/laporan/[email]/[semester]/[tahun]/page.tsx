@@ -1,62 +1,28 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useEffect, useState } from "react";
+import React from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-import { getData } from "@/lib/fetcher";
+import {
+  useGetEmployeeDetailQuery,
+  type KompetensiResponse,
+} from "@/lib/redux";
 import { Table, TableCell, TableBody, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
-
-export interface EmployeeDetail {
-  namaKaryawan: string;
-  jabatan: string;
-  divisi: string;
-  kompetensiUtama: Kompetensi[];
-  kompetensiPeran: Kompetensi[];
-  jumlah: NilaiDetail;
-  nilai: NilaiDetail;
-  totalNilai: NilaiDetail;
-  nilaiRataRata: number;
-}
-
-export interface Kompetensi {
-  nama: string;
-  deskripsi: string;
-  nilai: number;
-}
-
-export interface NilaiDetail {
-  nilai4: number;
-  nilai3: number;
-  nilai2: number;
-  nilai1: number;
-}
 
 const EmailPage = ({
   params,
 }: {
   params: { email: string; semester: string; tahun: string };
 }) => {
-  const [data, setData] = useState<EmployeeDetail[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(
-          `/api/data/employeedetail?email=${params.email}&tahun=${params.tahun}&semester=${params.semester}`
-        );
-        setData(response?.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, [params]);
+  const { data = [] } = useGetEmployeeDetailQuery({
+    email: params.email,
+    tahun: params.tahun,
+    semester: params.semester,
+  });
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
@@ -77,8 +43,8 @@ const EmailPage = ({
       doc.text(`Divisi : ${employee.divisi}`, 14, 35);
 
       // Helper function to create competency rows
-      const createCompetencyRows = (competencies: any) => {
-        return competencies.flatMap((comp: any, index: number) => [
+      const createCompetencyRows = (competencies: KompetensiResponse[]) => {
+        return competencies.flatMap((comp, index) => [
           [index + 1, comp.nama, "", "", "", ""],
           [
             "",

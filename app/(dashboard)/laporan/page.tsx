@@ -1,39 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { getData } from "@/lib/fetcher";
+import { useGetEmployeeSumQuery } from "@/lib/redux";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
 
-export interface EmployeeSum {
-  email: string;
-  divisi: string;
-  jabatan: string;
-  tahun: string;
-  semester: string;
-  levelSum: number;
-}
-
 const LaporanPage = () => {
-  const [data, setData] = useState<EmployeeSum[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/data/employeesum`);
-
-        // console.log(response.data);
-        setData(response?.data || []);
-      } catch (error) {
-        console.log(error);
-        setData([]);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data = [] } = useGetEmployeeSumQuery();
 
   return (
     <ScrollArea className="h-full">

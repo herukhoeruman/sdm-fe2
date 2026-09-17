@@ -7,9 +7,7 @@ import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { NavItem } from "@/types";
 import { Dispatch, SetStateAction } from "react";
-import { useSelector } from "@/lib/redux";
-import Loading from "@/app/loading";
-import toast from "react-hot-toast";
+import { useGetMeQuery } from "@/lib/redux";
 
 interface DashboardNavProps {
   items: NavItem[];
@@ -66,13 +64,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
   const path = usePathname();
   const router = useRouter();
 
-  const { data: me, error, loading } = useSelector((state) => state.getme);
-
-  if (error) {
-    toast.error("Silahkan login terlebih dahulu");
-    console.log(error);
-    // router.push("/");
-  }
+  const { data: me } = useGetMeQuery();
 
   const isUser = me?.roles?.includes("ROLE_USER");
   const isAdmin = me?.roles?.includes("ROLE_ADMIN");

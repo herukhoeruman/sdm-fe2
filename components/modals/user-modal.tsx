@@ -1,10 +1,9 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 import { useUserModal } from "@/hooks/use-user-modal";
@@ -31,19 +30,20 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "../ui/multi-select";
-import { getData } from "@/lib/fetcher";
-import { useRouter } from "next/navigation";
+import { useGetRolesQuery, useUpdateUserRolesMutation } from "@/lib/redux";
 
 const formSchema = z.object({
   roles: z.array(z.string()),
 });
 
 export const UserModal = () => {
-  const [roles, setRoles] = useState<{ role: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { isOpen, onClose, data } = useUserModal();
 
-  const { onOpen, isOpen, onClose, data } = useUserModal();
-  const router = useRouter();
+  const { data: roles = [] } = useGetRolesQuery(undefined, {
+    skip: !isOpen,
+  });
+  const [updateUserRoles, { isLoading: loading }] =
+    useUpdateUserRolesMutation();
 
   // change data.roles from response to array
   const dataRoles = data?.roles.map((role) => role.name);
@@ -57,43 +57,17 @@ export const UserModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setLoading(true);
+      const response = await updateUserRoles({
+        id: data!.id,
+        roles: values.roles,
+      }).unwrap();
 
-      const response = await axios.put(
-        process.env.NEXT_PUBLIC_API + `/api/data/user/${data?.id}/roles`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      toast.success(response.data.message);
+      toast.success(response.message);
       onClose();
-      window.location.reload();
     } catch (error) {
       toast.error("Something went wrong!");
-    } finally {
-      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/data/user/roles`);
-
-        setRoles(response?.data);
-        console.log(response?.data);
-      } catch (error) {
-        console.log(error);
-        setRoles([]);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (data?.roles) {

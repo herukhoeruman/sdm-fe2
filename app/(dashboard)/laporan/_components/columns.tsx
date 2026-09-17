@@ -5,10 +5,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { semesters } from "./data-table-toolbar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { EmployeeSum } from "../page";
+import type { EmployeeSumResponse } from "@/lib/redux";
 import Link from "next/link";
 
-export const columns: ColumnDef<EmployeeSum>[] = [
+export const columns: ColumnDef<EmployeeSumResponse>[] = [
   {
     id: "select",
     header: ({ table }) => (

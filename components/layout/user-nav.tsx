@@ -1,6 +1,5 @@
 "use client";
 
-import Loading from "@/app/loading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,25 +12,31 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSelector } from "@/lib/redux";
-import axios from "axios";
+import {
+  baseApi,
+  clearToken,
+  useDispatch,
+  useGetMeQuery,
+  useSignOutMutation,
+} from "@/lib/redux";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export const UserNav = () => {
   const router = useRouter();
 
-  const { data, loading, error } = useSelector((state) => state.getme);
+  const dispatch = useDispatch();
+  const { data } = useGetMeQuery();
+  const [signOut] = useSignOutMutation();
 
   const logout = async () => {
     try {
-      sessionStorage.removeItem("token");
-      const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API}/api/auth/signout`
-      );
+      await signOut().unwrap();
     } catch (error) {
       console.log(error);
     } finally {
+      dispatch(clearToken());
+      dispatch(baseApi.util.resetApiState());
       router.push("/");
       toast.success("Berhasil logout");
     }

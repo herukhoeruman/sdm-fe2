@@ -1,29 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { Pegawai } from "../_components/columns";
-import { getData } from "@/lib/fetcher";
 import Loading from "@/app/loading";
+import { useGetPegawaiByIdQuery } from "@/lib/redux";
 
 const PegawaiIdPage = ({ params }: { params: { pegawaiId: string } }) => {
-  const [data, setData] = useState<Pegawai | null>(null);
+  const { data, isLoading } = useGetPegawaiByIdQuery(params.pegawaiId);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/pegawai/${params.pegawaiId}`);
-
-        setData(response?.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, [params]);
-
-  if (!data) {
+  if (isLoading || !data) {
     return <Loading />;
   }
 

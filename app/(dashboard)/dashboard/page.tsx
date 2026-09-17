@@ -1,12 +1,12 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { useSelector } from "@/lib/redux";
+import { useGetMeQuery } from "@/lib/redux";
 
 const DashboardPage = () => {
-  const { data: me, loading } = useSelector((state) => state.getme);
+  const { data: me, isLoading } = useGetMeQuery();
 
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <div className="flex flex-col items-center justify-center h-full">

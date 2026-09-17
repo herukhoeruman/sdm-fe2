@@ -4,25 +4,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CellAction } from "./cell-action";
+import type { RoleResponse, UserResponse } from "@/lib/redux";
 
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-  roles: Role[];
-  nama: string;
-  jabatan: string;
-  divisi: string;
-  parent: number;
-  nama_atasan: string;
-  penilaian: boolean;
-  validasisdm: boolean;
-}
-
-export interface Role {
-  id: number;
-  name: string;
-}
+export type User = UserResponse;
+export type Role = RoleResponse;
 
 export const columns: ColumnDef<User>[] = [
   {

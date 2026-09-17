@@ -5,20 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CellAction } from "./cell-action";
+import type { PegawaiResponse } from "@/lib/redux";
 
-export interface Pegawai {
-  id: number;
-  email: string;
-  password: string;
-  username: string;
-  parent: number;
-  divisi: string;
-  jabatan: string;
-  nama: string;
-  namaAtasan: string;
-  penilaian: number;
-  validasiSdm?: number;
-}
+export type Pegawai = PegawaiResponse;
 
 export const columns: ColumnDef<Pegawai>[] = [
   {

@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { useUserModal } from "@/hooks/use-user-modal";
 import { User } from "./columns";
@@ -27,34 +26,9 @@ export const CellAction = ({ data }: CellActionProps) => {
   const userModal = useUserModal();
 
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const onCopy = (id: number) => {
     console.log(id);
-  };
-
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      const token = sessionStorage.getItem("token");
-
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API}/api/pegawai/${data.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      router.refresh();
-      router.push(`/pegawai`);
-      toast.success("Pegawai deleted");
-    } catch (error) {
-      toast.error("Failed to delete pegawai");
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
   };
 
   return (
@@ -62,8 +36,8 @@ export const CellAction = ({ data }: CellActionProps) => {
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={() => onDelete()}
-        loading={loading}
+        onConfirm={() => setOpen(false)}
+        loading={false}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

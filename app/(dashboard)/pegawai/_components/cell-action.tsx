@@ -14,10 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 import { Pegawai } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
 import Link from "next/link";
+import { useDeletePegawaiMutation } from "@/lib/redux";
 
 interface CellActionProps {
   data: Pegawai;
@@ -28,7 +28,7 @@ export const CellAction = ({ data }: CellActionProps) => {
   const params = useParams();
 
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [deletePegawai, { isLoading: loading }] = useDeletePegawaiMutation();
 
   const onCopy = (id: number) => {
     console.log(id);
@@ -36,24 +36,13 @@ export const CellAction = ({ data }: CellActionProps) => {
 
   const onDelete = async () => {
     try {
-      setLoading(true);
-      const token = sessionStorage.getItem("token");
-
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API}/api/pegawai/${data.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await deletePegawai(data.id).unwrap();
       router.refresh();
       router.push(`/pegawai`);
       toast.success("Pegawai deleted");
     } catch (error) {
       toast.error("Failed to delete pegawai");
     } finally {
-      setLoading(false);
       setOpen(false);
     }
   };

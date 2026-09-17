@@ -1,30 +1,12 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getData } from "@/lib/fetcher";
-import { useEffect, useState } from "react";
 import { DataTable } from "./_components/data-table";
-import { columns, User } from "./_components/columns";
+import { columns } from "./_components/columns";
+import { useGetUsersQuery } from "@/lib/redux";
 
 const UsersPage = () => {
-  const [data, setData] = useState<User[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getData(`/api/data/user`);
-
-        setData(response?.data || []);
-      } catch (error) {
-        console.log(error);
-        setData([]);
-      }
-    };
-
-    fetchData();
-  }, []);
-  // const token = sessionStorage.getItem("token") || "";
-
+  const { data = [] } = useGetUsersQuery();
   // const { data, error, isLoading } = useData<User[]>(
   //   `${process.env.NEXT_PUBLIC_API}/api/data/user`,
   //   token
