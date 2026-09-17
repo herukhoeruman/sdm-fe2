@@ -6,3 +6,4 @@ export * from "./penilaianApi";
 export * from "./laporanApi";
 export * from "./sdmApi";
 export * from "./storeApi";
+export * from "./kpiApi";

@@ -35,25 +35,25 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between font-normal"
         >
           {value
             ? options.find((option) => option.value === value)?.label
-            : "Piih opsi"}
+            : "Pilih opsi"}
           {value === "0" && <span className="opacity-50">Pilih opsi</span>}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command className="h-[300px]">
-          <CommandInput placeholder="Search option..." />
-          <CommandEmpty>No option found.</CommandEmpty>
+          <CommandInput placeholder="Cari berdasarkan nama..." />
+          <CommandEmpty>Data tidak ditemukan.</CommandEmpty>
           <ScrollArea className="h-[400px]">
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
+                  value={`${option.label} ${option.value}`}
                   onSelect={() => {
                     onChange(option.value === value ? "" : option.value);
                     setOpen(false);
@@ -62,7 +62,7 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
+                      value === option.value ? "opacity-100" : "opacity-0",
                     )}
                   />
                   {option.label}

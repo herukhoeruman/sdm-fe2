@@ -34,11 +34,13 @@ import {
   FilePlus,
   Users,
   UserCog,
+  Target,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  kpi: Target,
   report: FileText,
   generate: FilePlus,
   penilaian: ListChecks,

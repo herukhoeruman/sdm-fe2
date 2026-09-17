@@ -31,6 +31,12 @@ const userRoutes: NavItem[] = [
 
 const sdmRoutes: NavItem[] = [
   {
+    title: "KPI",
+    href: "/kpi",
+    icon: "kpi",
+    label: "KPI",
+  },
+  {
     title: "Generate Penilai",
     href: "/generator",
     icon: "generate",
