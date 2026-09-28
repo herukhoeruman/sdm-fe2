@@ -23,24 +23,36 @@ interface ComboboxProps {
   options: { value: string; label: string }[];
   value?: number | string | null | undefined;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
+export const Combobox = ({
+  options,
+  value,
+  onChange,
+  disabled,
+}: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant="outline"
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between font-normal"
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
-            : "Pilih opsi"}
-          {value === "0" && <span className="opacity-50">Pilih opsi</span>}
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate text-left",
+              !selectedOption && "text-muted-foreground",
+            )}
+          >
+            {selectedOption?.label ?? "Pilih opsi"}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

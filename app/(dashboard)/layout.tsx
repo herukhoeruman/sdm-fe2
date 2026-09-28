@@ -1,21 +1,30 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { clearToken, useDispatch, useGetMeQuery } from "@/lib/redux";
+import {
+  clearToken,
+  useDispatch,
+  useGetMeQuery,
+  useSelector,
+} from "@/lib/redux";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
+import toast from "react-hot-toast";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isError } = useGetMeQuery();
 
+  const token = useSelector((state) => state.auth.token);
+
   useEffect(() => {
-    if (isError) {
+    if (!token) {
+      toast.error("Sesi Anda telah berakhir. Silahkan login kembali.");
       dispatch(clearToken());
-      router.replace("/?error=tokenExpired");
+      redirect("/");
     }
   }, [dispatch, isError, router]);
 

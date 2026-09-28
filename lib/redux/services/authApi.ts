@@ -1,4 +1,5 @@
 import { baseApi } from "./baseApi";
+import { setUser, type AuthUser } from "../slices/authSlice";
 
 export interface SignInPayload {
   username: string;
@@ -9,15 +10,7 @@ export interface SignInResponse {
   token: string;
 }
 
-export interface UserProfileResponse {
-  id: number;
-  username: string;
-  email: string;
-  nama: string;
-  jabatan: string;
-  divisi: string;
-  roles: string[];
-}
+export type UserProfileResponse = AuthUser;
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,6 +24,14 @@ export const authApi = baseApi.injectEndpoints({
     getMe: builder.query<UserProfileResponse, void>({
       query: () => "/api/auth/getme",
       providesTags: ["Me"],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+        } catch {
+          // Error autentikasi ditangani oleh dashboard layout.
+        }
+      },
     }),
   }),
 });

@@ -1,13 +1,17 @@
 import { create } from "zustand";
 
+export type KpiModalMode = "pegawai" | "sdm";
+
 interface UseKpiModalStore {
   isOpen: boolean;
-  onOpen: () => void;
+  mode: KpiModalMode;
+  onOpen: (mode?: KpiModalMode) => void;
   onClose: () => void;
 }
 
 export const useKpiModal = create<UseKpiModalStore>((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
+  mode: "pegawai",
+  onOpen: (mode = "pegawai") => set({ isOpen: true, mode }),
   onClose: () => set({ isOpen: false }),
 }));

@@ -61,11 +61,11 @@ export default function UserAuthForm() {
       dispatch(setToken(response.token));
 
       setSuccess("Login success");
-
-      router.push("/dashboard");
     } catch (error: any) {
       const message = error?.data?.message ?? error?.error ?? "Login gagal";
       setError(message);
+    } finally {
+      router.push("/dashboard");
     }
   };
 
