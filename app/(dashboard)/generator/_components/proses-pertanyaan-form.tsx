@@ -38,11 +38,11 @@ interface Props {
 }
 
 const FormSchema = z.object({
-  tahun: z.string().min(1, { message: "Tahun tidak boleh kosong" }),
-  semester: z.string().min(1, { message: "Semester tidak boleh kosong" }),
-  userId: z.number().min(1, { message: "User tidak boleh kosong" }),
-  tglJatuhTempo: z.date().min(new Date(), {
-    message: "Tanggal jatuh tempo tidak boleh kurang dari hari ini",
+  tahun: z.string().min(1, { message: "Tahun wajib diisi" }),
+  semester: z.string().min(1, { message: "Semester wajib diisi" }),
+  userId: z.number().min(1, { message: "User wajib diisi" }),
+  tglJatuhTempo: z.coerce.date({
+    errorMap: () => ({ message: "Tanggal jatuh tempo wajib diisi" }),
   }),
 });
 
@@ -96,13 +96,13 @@ export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-x-2">
+        <div className="space-y-5">
+          <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-3">
             <FormField
               control={form.control}
               name="tahun"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="min-w-0">
                   <FormLabel>Tahun</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -131,7 +131,7 @@ export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
               control={form.control}
               name="semester"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="min-w-0">
                   <FormLabel>Semester</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -157,22 +157,24 @@ export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
               control={form.control}
               name="tglJatuhTempo"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="mb-2">Tanggal jatuh tempo</FormLabel>
+                <FormItem className="min-w-0">
+                  <FormLabel>Tanggal jatuh tempo</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
+                          type="button"
+                          disabled={isLoading}
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            "w-full bg-card pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value ? (
                             format(field.value, "dd MMM yyyy")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>Pilih tanggal</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4  opacity-50" />
                         </Button>
@@ -193,16 +195,22 @@ export const ProsesPertanyaanForm = ({ onSubmitSuccess }: Props) => {
               )}
             />
           </div>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="animate-spin w-4 h-4 mr-2" />
-                Submit
-              </>
-            ) : (
-              "Submit"
-            )}
-          </Button>
+          <div className="flex justify-end border-t pt-5">
+            <Button
+              className="w-full sm:w-auto"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                  Memproses...
+                </>
+              ) : (
+                "Generate Penilai"
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

@@ -111,8 +111,8 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
           className="space-y-6"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
-            <legend className="px-2 text-base font-semibold">Informasi Akun</legend>
+          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Informasi Akun</legend>
             <p className="mb-5 text-sm text-muted-foreground">Lengkapi identitas dan akses akun pegawai.</p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField
@@ -195,8 +195,8 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
           </div>
           </fieldset>
 
-          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
-            <legend className="px-2 text-base font-semibold">Informasi Pekerjaan</legend>
+          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Informasi Pekerjaan</legend>
             <p className="mb-5 text-sm text-muted-foreground">Atur divisi, jabatan, dan atasan pegawai.</p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField
@@ -279,8 +279,8 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
           </div>
           </fieldset>
 
-          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
-            <legend className="px-2 text-base font-semibold">Penilaian dan Validasi</legend>
+          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Penilaian dan Validasi</legend>
             <p className="mb-5 text-sm text-muted-foreground">Lengkapi penilaian dan status validasi SDM.</p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField

@@ -1,7 +1,8 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowDown01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -51,16 +52,16 @@ export const KpiTree = ({ data }: KpiTreeProps) => {
                     className="h-7 w-7 shrink-0"
                     aria-label={
                       isExpanded
-                        ? `Tutup children ${item.name}`
-                        : `Tampilkan children ${item.name}`
+                        ? `Tutup turunan ${item.name}`
+                        : `Tampilkan turunan ${item.name}`
                     }
                     aria-expanded={isExpanded}
                     onClick={() => toggleExpanded(item.id)}
                   >
                     {isExpanded ? (
-                      <ChevronDown className="h-4 w-4" />
+                      <HugeiconsIcon icon={ArrowDown01Icon} size={16} strokeWidth={1.5} aria-hidden="true" />
                     ) : (
-                      <ChevronRight className="h-4 w-4" />
+                      <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={1.5} aria-hidden="true" />
                     )}
                   </Button>
                 ) : (
@@ -92,8 +93,8 @@ export const KpiTree = ({ data }: KpiTreeProps) => {
                 {item.status}
               </span>
             </TableCell>
-            <TableCell className="text-right">{item.weight}%</TableCell>
-            <TableCell className="text-right">
+            <TableCell className="text-right tabular-nums">{item.weight}%</TableCell>
+            <TableCell className="text-right tabular-nums">
               {item.cascadeRatio}%
             </TableCell>
           </TableRow>
@@ -105,15 +106,15 @@ export const KpiTree = ({ data }: KpiTreeProps) => {
 
   if (!data.length) {
     return (
-      <div className="rounded-md border border-dashed p-10 text-center text-sm text-muted-foreground">
+      <div className="rounded-xl border border-dashed bg-card p-10 text-center text-sm text-muted-foreground">
         Data hierarchy KPI tidak ditemukan.
       </div>
     );
   }
 
   return (
-    <div className="rounded-md border">
-      <Table>
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <Table className="min-w-[850px]">
         <TableHeader>
           <TableRow>
             <TableHead>KPI</TableHead>
@@ -121,8 +122,8 @@ export const KpiTree = ({ data }: KpiTreeProps) => {
             <TableHead>Unit</TableHead>
             <TableHead>Level</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Bobot</TableHead>
-            <TableHead className="text-right">Cascade Ratio</TableHead>
+            <TableHead className="text-right tabular-nums">Bobot</TableHead>
+            <TableHead className="text-right tabular-nums">Cascade Ratio</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>{renderRows(data)}</TableBody>

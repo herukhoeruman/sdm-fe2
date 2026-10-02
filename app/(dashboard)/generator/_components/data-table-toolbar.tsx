@@ -31,15 +31,16 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-1">
         <Input
-          placeholder="Filter emails..."
+          aria-label="Cari email"
+          placeholder="Cari email..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="w-1/6"
+          className="w-full sm:w-64"
         />
         {table.getColumn("semester") && (
           <DataTableFacetedFilter

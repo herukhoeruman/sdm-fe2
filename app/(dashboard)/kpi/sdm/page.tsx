@@ -1,6 +1,8 @@
 "use client";
 
-import { Loader2, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Add01Icon, Target01Icon } from "@hugeicons/core-free-icons";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -35,17 +37,21 @@ const KpiSdmPage = () => {
 
   return (
     <ScrollArea className="h-full">
-      <div className="space-y-6 p-6">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <h1 className="text-2xl font-medium">KPI SDM</h1>
+      <div className="mx-auto w-full max-w-7xl space-y-6 p-4 sm:p-6">
+        <div className="flex flex-col justify-between gap-5 rounded-xl border border-primary/15 bg-gradient-to-r from-accent to-card p-5 shadow-sm lg:flex-row lg:items-end sm:p-6">
+          <div className="min-w-0 space-y-2">
+            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+              <HugeiconsIcon icon={Target01Icon} size={20} strokeWidth={1.5} aria-hidden="true" />
+              Kinerja Perusahaan
+            </div>
+            <h1 className="text-2xl font-semibold tracking-tight">KPI SDM</h1>
             <p className="text-sm text-muted-foreground">
-              Hierarchy KPI perusahaan dan turunannya berdasarkan tahun.
+              Kelola hierarki KPI perusahaan dan turunannya berdasarkan tahun.
             </p>
           </div>
 
-          <div className="flex w-full items-end gap-2 sm:w-auto">
-            <div className="w-full space-y-1 sm:w-36">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end">
+            <div className="w-full space-y-2 sm:w-36">
               <label htmlFor="kpi-year" className="text-sm font-medium">
                 Tahun
               </label>
@@ -65,19 +71,27 @@ const KpiSdmPage = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={() => onOpen("sdm")}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create KPI
+            <Button className="w-full shrink-0 sm:w-auto" onClick={() => onOpen("sdm")}>
+              <HugeiconsIcon icon={Add01Icon} size={18} strokeWidth={1.5} className="mr-2" aria-hidden="true" />
+              Tambah KPI
             </Button>
           </div>
         </div>
 
+        <section className="min-w-0 space-y-5 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold text-primary">Hierarki KPI</h2>
+              <p className="text-sm text-muted-foreground">Klik panah pada KPI untuk melihat turunannya.</p>
+            </div>
+            <span className="w-fit rounded-lg bg-accent px-3 py-1 text-sm font-medium text-primary">Tahun {tahun}</span>
+          </div>
         {isLoading || isFetching ? (
-          <div className="flex h-48 items-center justify-center rounded-md border">
+          <div className="flex h-48 items-center justify-center rounded-xl border bg-card">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : isError ? (
-          <div className="rounded-md border border-destructive/50 p-8 text-center">
+          <div className="rounded-xl border border-destructive/30 bg-card p-8 text-center">
             <p className="mb-4 text-sm text-destructive">
               Data hierarchy KPI gagal dimuat.
             </p>
@@ -88,6 +102,7 @@ const KpiSdmPage = () => {
         ) : (
           <KpiTree data={data} />
         )}
+        </section>
       </div>
     </ScrollArea>
   );

@@ -16,23 +16,20 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SkeletonPenilaian } from "../../_components/skeleton-penilaian";
 
 const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   const router = useRouter();
 
-  const { data: pertanyaan = [], isLoading: isQuestionsLoading } = useGetQuestionsQuery();
+  const { data: pertanyaan = [], isLoading: isQuestionsLoading } =
+    useGetQuestionsQuery();
   const { data: userById, isLoading: isPersonLoading } = useGetPersonByIdQuery(
-    params.personId
+    params.personId,
   );
   const { data: dataUser } = useGetMeQuery();
-  const [submitAnswers, { isLoading: isSubmitting }] = useSubmitAnswersMutation();
+  const [submitAnswers, { isLoading: isSubmitting }] =
+    useSubmitAnswersMutation();
 
   const [user, setUser] = useState<AssessmentPayload>({
     idUser: dataUser?.id,
@@ -60,11 +57,11 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
   const handleAnswerClick = (
     pertanyaanId: number,
     jawabanId: number,
-    level: number
+    level: number,
   ) => {
     const updatedAnswers = [...user.answers];
     const existingAnswerIndex = updatedAnswers.findIndex(
-      (answer) => answer.pertanyaanId === pertanyaanId
+      (answer) => answer.pertanyaanId === pertanyaanId,
     );
 
     if (existingAnswerIndex !== -1) {
@@ -96,7 +93,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
 
   return (
     <ScrollArea className="h-full">
-      <div className="mx-auto w-full max-w-5xl space-y-6 p-4 sm:p-6">
+      <div className="mx-auto w-full space-y-6 p-4 sm:p-6">
         <Link
           href="/penilaian"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
@@ -106,19 +103,27 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
         </Link>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Penilaian Individu</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Penilaian Individu
+          </h1>
           <p className="text-sm text-muted-foreground">
             Pilih satu jawaban yang paling sesuai untuk setiap pertanyaan.
           </p>
         </div>
 
-        <Card>
+        <Card className="border-primary/20 bg-gradient-to-br from-card to-accent/60">
           <CardContent className="grid gap-6 p-4 sm:grid-cols-2 sm:p-6">
             <div className="min-w-0 space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Pegawai yang dinilai</p>
-              <p className="break-words text-lg font-semibold">{userById?.nama}</p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Pegawai yang dinilai
+              </p>
+              <p className="break-words text-lg font-semibold">
+                {userById?.nama}
+              </p>
               <p className="break-words text-sm text-muted-foreground">
-                {[userById?.jabatan, userById?.divisi].filter(Boolean).join(" · ")}
+                {[userById?.jabatan, userById?.divisi]
+                  .filter(Boolean)
+                  .join(" · ")}
               </p>
             </div>
             <div className="space-y-3 self-center">
@@ -138,7 +143,9 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
               >
                 <div
                   className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${pertanyaan.length ? (user.answers.length / pertanyaan.length) * 100 : 0}%` }}
+                  style={{
+                    width: `${pertanyaan.length ? (user.answers.length / pertanyaan.length) * 100 : 0}%`,
+                  }}
                 />
               </div>
             </div>
@@ -155,20 +162,33 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                   </span>
                   <div className="min-w-0 space-y-1">
                     <p className="break-words text-xs font-medium text-muted-foreground">
-                      {[item.jenis, item.kompetensi].filter(Boolean).join(" · ")}
+                      {[item.jenis, item.kompetensi]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </p>
-                    <CardTitle id={`question-${item.id}`} className="break-words text-base font-medium leading-relaxed sm:text-lg">
+                    <CardTitle
+                      id={`question-${item.id}`}
+                      className="break-words text-base font-medium leading-relaxed sm:text-lg"
+                    >
                       {item.pertanyaan}
                     </CardTitle>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-                <fieldset disabled={isSubmitting} aria-labelledby={`question-${item.id}`} className="min-w-0 space-y-3">
-                  <legend className="mb-3 text-xs text-muted-foreground">Pilih jawaban</legend>
+              <CardContent className="p-4 sm:p-6  ">
+                <fieldset
+                  disabled={isSubmitting}
+                  aria-labelledby={`question-${item.id}`}
+                  className="min-w-0 space-y-3"
+                >
+                  <legend className="mb-3 text-xs text-muted-foreground">
+                    Pilih jawaban
+                  </legend>
                   {item.jawabanSet.map((jawaban, answerIndex) => {
                     const selected = user.answers.some(
-                      (answer) => answer.pertanyaanId === item.id && answer.jawabanId === jawaban.id
+                      (answer) =>
+                        answer.pertanyaanId === item.id &&
+                        answer.jawabanId === jawaban.id,
                     );
 
                     return (
@@ -176,8 +196,10 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                         key={jawaban.id}
                         className={cn(
                           "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 sm:p-4",
-                          selected ? "border-primary bg-primary/5" : "hover:bg-muted/50",
-                          isSubmitting && "cursor-not-allowed opacity-60"
+                          selected
+                            ? "border-primary bg-primary/5"
+                            : "hover:bg-muted/50",
+                          isSubmitting && "cursor-not-allowed opacity-60",
                         )}
                       >
                         <input
@@ -185,13 +207,23 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                           name={`question-${item.id}`}
                           value={jawaban.id}
                           checked={selected}
-                          onChange={() => handleAnswerClick(item.id, jawaban.id, jawaban.level)}
-                          className="mt-2 h-4 w-4 shrink-0 accent-primary"
+                          onChange={() =>
+                            handleAnswerClick(
+                              item.id,
+                              jawaban.id,
+                              jawaban.level,
+                            )
+                          }
+                          className="mt-2 h-4 w-4 shrink-0 accent-primary hidden"
                         />
-                        <span className={cn(
-                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-sm font-medium",
-                          selected ? "border-primary bg-primary text-primary-foreground" : "bg-background"
-                        )}>
+                        <span
+                          className={cn(
+                            "flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-sm font-medium",
+                            selected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "bg-background",
+                          )}
+                        >
                           {String.fromCharCode(65 + answerIndex)}
                         </span>
                         <span className="min-w-0 break-words pt-1 text-sm leading-relaxed sm:text-base">

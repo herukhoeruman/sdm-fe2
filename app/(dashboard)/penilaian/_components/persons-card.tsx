@@ -46,7 +46,7 @@ export const PersonsCard = ({ person }: PersonsCardProps) => {
     </>
   );
 
-  const className = "flex h-full min-w-0 flex-col gap-5 rounded-xl border bg-card p-4 text-card-foreground shadow-sm sm:p-5";
+  const className = "flex h-full min-w-0 flex-col gap-5 rounded-xl border border-t-4 border-t-primary/30 bg-card p-4 text-card-foreground shadow-sm sm:p-5";
 
   return person.penilaian ? (
     <div className={className}>{content}</div>
@@ -54,7 +54,7 @@ export const PersonsCard = ({ person }: PersonsCardProps) => {
     <Link
       href={`/penilaian/submit/${person.id}`}
       aria-label={`Mulai penilaian ${person.nama}`}
-      className={cn(className, "transition-colors hover:border-primary/40 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2")}
+      className={cn(className, "transition-colors hover:border-primary/50 hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2")}
     >
       {content}
     </Link>

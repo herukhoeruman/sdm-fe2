@@ -506,8 +506,8 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
             type="button"
             aria-expanded={isOpen}
             className={cn(
-              "group flex w-full items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-              isActive && "bg-accent",
+              "group flex w-full items-center rounded-lg border-l-4 border-transparent px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-accent-foreground",
+              isActive && "border-primary bg-accent text-accent-foreground",
             )}
             onClick={() =>
               setOpenSubmenus((current) => ({
@@ -545,7 +545,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
                     className={cn(
                       "block rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       path === child.href &&
-                        "bg-accent font-medium text-accent-foreground",
+                        "bg-accent font-semibold text-accent-foreground",
                       child.disabled && "cursor-not-allowed opacity-80",
                     )}
                   >
@@ -574,8 +574,8 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
       >
         <span
           className={cn(
-            "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-            path === item.href && "bg-accent",
+            "group flex items-center rounded-lg border-l-4 border-transparent px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-accent-foreground",
+            (path === item.href || path.startsWith(`${item.href}/`)) && "border-primary bg-accent text-accent-foreground",
             item.disabled && "cursor-not-allowed opacity-80",
           )}
         >

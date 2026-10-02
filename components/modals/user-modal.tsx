@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -78,14 +79,15 @@ export const UserModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="p-0 text-black bg-white">
-        <DialogHeader className="px-6 pt-8">
-          <DialogTitle className="text-2xl text-center">
-            Update role user
-          </DialogTitle>
+      <DialogContent className="text-black bg-white">
+        <DialogHeader>
+          <DialogTitle>Update Roles for {data?.nama}</DialogTitle>
+          <DialogDescription>
+            Pilih roles yang ingin diberikan kepada user ini.
+          </DialogDescription>
         </DialogHeader>
-        <div className="p-6 h-full">
-          <div className="space-y-4 py-2 pb-4">
+        <div className="h-full">
+          <div className="space-y-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField

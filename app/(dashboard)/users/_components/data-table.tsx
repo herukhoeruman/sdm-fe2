@@ -84,11 +84,11 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="min-w-0 space-y-4">
       {/* <Button onClick={handleRowSelection}>Log selected rows</Button> */}
       <DataTableToolbar table={table} data={data} />
-      <div className="rounded-md border">
-        <Table>
+      <div className="overflow-hidden rounded-xl border bg-card">
+        <Table className="min-w-[800px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -130,7 +130,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Data tidak ditemukan.
                 </TableCell>
               </TableRow>
             )}

@@ -21,15 +21,16 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-1">
         <Input
-          placeholder="Search name..."
+          aria-label="Cari nama"
+          placeholder="Cari nama..."
           value={(table.getColumn("nama")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("nama")?.setFilterValue(event.target.value)
           }
-          className="w-1/6"
+          className="w-full sm:w-64"
         />
         {/* {table.getColumn("semester") && (
           <DataTableFacetedFilter
@@ -51,7 +52,7 @@ export function DataTableToolbar<TData>({
       </div>
       <DataTableViewOptions table={table} />
       <Button
-        className="ml-2"
+        className="w-full sm:w-auto"
         size="sm"
         asChild
         // onClick={() => {
@@ -60,7 +61,7 @@ export function DataTableToolbar<TData>({
       >
         <Link href="/pegawai/create">
           <Plus className="mr-2 h-4 w-4" />
-          Add Pegawai
+          Tambah Pegawai
         </Link>
       </Button>
     </div>
