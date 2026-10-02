@@ -349,10 +349,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  DashboardSquare01Icon,
+  File02Icon,
+  FileAddIcon,
+  Target01Icon,
+  Task01Icon,
+  UserGroupIcon,
+  UserSettings01Icon,
+} from "@hugeicons/core-free-icons";
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { NavItem } from "@/types";
 import { useGetMeQuery } from "@/lib/redux";
@@ -361,6 +371,16 @@ interface DashboardNavProps {
   items: NavItem[];
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }
+
+const navigationIcons = {
+  dashboard: DashboardSquare01Icon,
+  penilaian: Task01Icon,
+  kpi: Target01Icon,
+  generate: FileAddIcon,
+  report: File02Icon,
+  users: UserGroupIcon,
+  userCog: UserSettings01Icon,
+};
 
 type Role = "ROLE_USER" | "ROLE_SDM" | "ROLE_ADMIN";
 
@@ -459,7 +479,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
       return null;
     }
 
-    const Icon = Icons[item.icon || "arrowRight"];
+    const icon = navigationIcons[item.icon as keyof typeof navigationIcons] ?? ArrowRight01Icon;
 
     // =========================
     // Menu dengan submenu
@@ -496,11 +516,15 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
               }))
             }
           >
-            <Icon className="mr-2 h-4 w-4" />
+            <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} className="mr-2 shrink-0" aria-hidden="true" />
 
             <span className="flex-1 text-left">{item.title}</span>
 
-            <ChevronDown
+            <HugeiconsIcon
+              icon={ArrowDown01Icon}
+              size={16}
+              strokeWidth={1.5}
+              aria-hidden="true"
               className={cn(
                 "h-4 w-4 transition-transform",
                 isOpen && "rotate-180",
@@ -555,7 +579,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
             item.disabled && "cursor-not-allowed opacity-80",
           )}
         >
-          <Icon className="mr-2 h-4 w-4" />
+          <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} className="mr-2 shrink-0" aria-hidden="true" />
 
           <span>{item.title}</span>
         </span>

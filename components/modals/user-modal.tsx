@@ -78,13 +78,13 @@ export const UserModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="p-0 overflow-hidden  text-black bg-white">
+      <DialogContent className="p-0 text-black bg-white">
         <DialogHeader className="px-6 pt-8">
           <DialogTitle className="text-2xl text-center">
             Update role user
           </DialogTitle>
         </DialogHeader>
-        <div className="p-6 h-[400px]">
+        <div className="p-6 h-full">
           <div className="space-y-4 py-2 pb-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>

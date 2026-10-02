@@ -19,7 +19,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -97,99 +96,133 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="w-full">
-            <Link
-              href="/penilaian"
-              className="flex items-center hover:opacity-75 transition mb-6 text-sm"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali
-            </Link>
-          </div>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">Penilaian Individu</h1>
-            <span className="text-sm text-slate-700 dark:text-slate-100">
-              Berikan jawaban yang menurut anda paling tepat
-            </span>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 mt-16 gap-6">
-          <div className="grid grid-cols text-sm text-slate-700 dark:text-slate-100">
-            <p>{userById?.nama}</p>
-            <p>{userById?.divisi}</p>
-          </div>
-          {pertanyaan.map((item, index) => (
-            <Card key={item.id}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <div className="flex items-center justify-center h-12 w-12 p-6 rounded-full border-2 border-white bg-zinc-100 dark:bg-zinc-800 shadow-md transition-all hover:rotate-6 hover:bg-zinc-100 active:rotate-12 active:scale-90">
-                    {index + 1}
-                  </div>
-                  <div className="grid">
-                    <p className="text-lg font-medium">{item.pertanyaan}</p>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div>
-                  <div className="flex items-center text-foreground/60 mt-6">
-                    <div className="border-b w-[50px] dark:border-white/2"></div>
-                    <p className="my-2 text-xs mx-2">Pilih jawaban</p>
-                    <div className="border-b w-auto grow dark:border-white/2" />
-                  </div>
-                  {item.jawabanSet.map((jawaban, index) => (
-                    <div
-                      key={jawaban.id}
-                      className="grid grid-cols-1 gap-4 hover:bg-zinc-100 dark:hover:bg-zinc-800 p-3 rounded-md"
-                    >
-                      <div className="flex items-center gap-x-2">
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "hover:bg-blue-900 dark:text-white hover:text-white",
+      <div className="mx-auto w-full max-w-5xl space-y-6 p-4 sm:p-6">
+        <Link
+          href="/penilaian"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Kembali ke Penilaian
+        </Link>
 
-                            user.answers.some(
-                              (answer) =>
-                                answer.pertanyaanId === item.id &&
-                                answer.jawabanId === jawaban.id
-                            )
-                              ? "bg-blue-950 text-white"
-                              : ""
-                          )}
-                          onClick={() =>
-                            handleAnswerClick(
-                              item.id,
-                              jawaban.id,
-                              jawaban.level
-                            )
-                          }
-                        >
-                          {String.fromCharCode(65 + index)}
-                        </Button>
-                        <div className="text-base">{jawaban.jawaban}</div>
-                      </div>
-                    </div>
-                  ))}
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight">Penilaian Individu</h1>
+          <p className="text-sm text-muted-foreground">
+            Pilih satu jawaban yang paling sesuai untuk setiap pertanyaan.
+          </p>
+        </div>
+
+        <Card>
+          <CardContent className="grid gap-6 p-4 sm:grid-cols-2 sm:p-6">
+            <div className="min-w-0 space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">Pegawai yang dinilai</p>
+              <p className="break-words text-lg font-semibold">{userById?.nama}</p>
+              <p className="break-words text-sm text-muted-foreground">
+                {[userById?.jabatan, userById?.divisi].filter(Boolean).join(" · ")}
+              </p>
+            </div>
+            <div className="space-y-3 self-center">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                <span className="font-medium">Progres penilaian</span>
+                <span className="text-muted-foreground" aria-live="polite">
+                  {user.answers.length} dari {pertanyaan.length} dijawab
+                </span>
+              </div>
+              <div
+                role="progressbar"
+                aria-label="Progres penilaian"
+                aria-valuemin={0}
+                aria-valuemax={pertanyaan.length || 1}
+                aria-valuenow={user.answers.length}
+                className="h-2 overflow-hidden rounded-full bg-muted"
+              >
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${pertanyaan.length ? (user.answers.length / pertanyaan.length) * 100 : 0}%` }}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-5">
+          {pertanyaan.map((item, questionIndex) => (
+            <Card key={item.id}>
+              <CardHeader className="space-y-3 p-4 sm:p-6">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold">
+                    {questionIndex + 1}
+                  </span>
+                  <div className="min-w-0 space-y-1">
+                    <p className="break-words text-xs font-medium text-muted-foreground">
+                      {[item.jenis, item.kompetensi].filter(Boolean).join(" · ")}
+                    </p>
+                    <CardTitle id={`question-${item.id}`} className="break-words text-base font-medium leading-relaxed sm:text-lg">
+                      {item.pertanyaan}
+                    </CardTitle>
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                <fieldset disabled={isSubmitting} aria-labelledby={`question-${item.id}`} className="min-w-0 space-y-3">
+                  <legend className="mb-3 text-xs text-muted-foreground">Pilih jawaban</legend>
+                  {item.jawabanSet.map((jawaban, answerIndex) => {
+                    const selected = user.answers.some(
+                      (answer) => answer.pertanyaanId === item.id && answer.jawabanId === jawaban.id
+                    );
+
+                    return (
+                      <label
+                        key={jawaban.id}
+                        className={cn(
+                          "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 sm:p-4",
+                          selected ? "border-primary bg-primary/5" : "hover:bg-muted/50",
+                          isSubmitting && "cursor-not-allowed opacity-60"
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name={`question-${item.id}`}
+                          value={jawaban.id}
+                          checked={selected}
+                          onChange={() => handleAnswerClick(item.id, jawaban.id, jawaban.level)}
+                          className="mt-2 h-4 w-4 shrink-0 accent-primary"
+                        />
+                        <span className={cn(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-sm font-medium",
+                          selected ? "border-primary bg-primary text-primary-foreground" : "bg-background"
+                        )}>
+                          {String.fromCharCode(65 + answerIndex)}
+                        </span>
+                        <span className="min-w-0 break-words pt-1 text-sm leading-relaxed sm:text-base">
+                          {jawaban.jawaban}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </fieldset>
               </CardContent>
             </Card>
           ))}
-          <div className="flex flex-col md:flex-row items-center justify-end">
-            <Button
-              className="bg-blue-950 hover:bg-blue-900 dark:text-white w-full md:w-auto"
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? (
-                <Loader2 className="animate-spin w-4 h-4" />
-              ) : (
-                "Submit Jawaban"
-              )}
-            </Button>
-          </div>
+          {pertanyaan.length === 0 && (
+            <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+              Belum ada pertanyaan penilaian tersedia.
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            Jawab semua pertanyaan sebelum mengirim penilaian.
+          </p>
+          <Button
+            disabled={isSubmitting || pertanyaan.length === 0}
+            className="w-full sm:w-auto"
+            onClick={handleSubmit}
+          >
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSubmitting ? "Menyimpan Jawaban..." : "Submit Jawaban"}
+          </Button>
         </div>
       </div>
     </ScrollArea>

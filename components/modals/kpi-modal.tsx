@@ -589,7 +589,7 @@ export const KpiModal = () => {
       }}
     >
       <DialogContent
-        className="sm:max-w-2xl h-[calc(100vh-2rem)] flex flex-col "
+        className="sm:max-w-2xl h-[calc(80vh-2rem)] flex flex-col "
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >

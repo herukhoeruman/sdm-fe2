@@ -65,22 +65,24 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
   }));
 
   const toastMessage = initialData ? "Pegawai updated." : "Pegawai created.";
-  const action = initialData ? "Save changes" : "Create";
+  const action = initialData ? "Simpan Perubahan" : "Tambah Pegawai";
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      nama: "",
-      email: "",
-      password: "",
-      username: "",
-      parent: 0,
-      divisi: "",
-      jabatan: "",
-      namaAtasan: "",
-      penilaian: 0,
-      validasiSdm: 0,
-    },
+    defaultValues: initialData
+      ? { ...initialData, password: "" }
+      : {
+          nama: "",
+          email: "",
+          password: "",
+          username: "",
+          parent: 0,
+          divisi: "",
+          jabatan: "",
+          namaAtasan: "",
+          penilaian: 0,
+          validasiSdm: 0,
+        },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -103,208 +105,240 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
   };
 
   return (
-    <div>
+    <div className="w-full max-w-5xl">
       <Form {...form}>
         <form
-          className="space-y-4 md:w-2/4"
+          className="space-y-6"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="nama"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nama</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Nama Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Email Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
+            <legend className="px-2 text-base font-semibold">Informasi Akun</legend>
+            <p className="mb-5 text-sm text-muted-foreground">Lengkapi identitas dan akses akun pegawai.</p>
+            <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="nama"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Nama</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Nama Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Email Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Username Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Username Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    disabled={loading}
-                    placeholder="Password Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  {initialData
-                    ? "Kosongkan jika tidak ingin mengganti password"
-                    : ""}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        autoComplete="new-password"
+                        disabled={loading}
+                        placeholder="Password Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {initialData
+                        ? "Kosongkan jika tidak ingin mengganti password"
+                        : "Gunakan password minimal 4 karakter."}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="parent"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Parent</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={options}
-                    value={field.value.toString() || ""}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      console.log(value);
-                      form.setValue(
-                        "namaAtasan",
-                        options.find((opt) => opt.value === value)?.label || ""
-                      );
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="divisi"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Divisi</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Divisi Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="jabatan"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Jabatan</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Jabatan Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="namaAtasan"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nama Atasan</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={true}
-                    placeholder="Nama Atasan Pegawai"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          </div>
+          </fieldset>
 
-          <FormField
-            control={form.control}
-            name="penilaian"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Penilaian</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Penilaian Pegawai"
-                    type="number"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="validasiSdm"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Validasi SDM</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select validasi" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="0">False</SelectItem>
-                    <SelectItem value="1">True</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
+            <legend className="px-2 text-base font-semibold">Informasi Pekerjaan</legend>
+            <p className="mb-5 text-sm text-muted-foreground">Atur divisi, jabatan, dan atasan pegawai.</p>
+            <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="parent"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Atasan</FormLabel>
+                    <FormControl>
+                      <Combobox
+                        disabled={loading}
+                        options={options}
+                        value={field.value.toString() || ""}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          console.log(value);
+                          form.setValue(
+                            "namaAtasan",
+                            options.find((opt) => opt.value === value)?.label || "",
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="divisi"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Divisi</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Divisi Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="jabatan"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Jabatan</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Jabatan Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="namaAtasan"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Nama Atasan</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={true}
+                        placeholder="Nama Atasan Pegawai"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="pt-6 space-x-2 flex items-center justify-start w-full">
+          </div>
+          </fieldset>
+
+          <fieldset disabled={loading} className="min-w-0 rounded-lg border bg-card p-4 text-card-foreground sm:p-6">
+            <legend className="px-2 text-base font-semibold">Penilaian dan Validasi</legend>
+            <p className="mb-5 text-sm text-muted-foreground">Lengkapi penilaian dan status validasi SDM.</p>
+            <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="penilaian"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Penilaian</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Penilaian Pegawai"
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="validasiSdm"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>Validasi SDM</FormLabel>
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select validasi" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0">False</SelectItem>
+                        <SelectItem value="1">True</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+          </div>
+          </fieldset>
+
+          <div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:justify-end">
+            <Button
+              disabled={loading}
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/pegawai")}
+            >
+              Batal
+            </Button>
             <Button disabled={loading} type="submit">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {action}
