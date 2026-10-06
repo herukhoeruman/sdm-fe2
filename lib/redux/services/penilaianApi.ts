@@ -60,6 +60,7 @@ export interface SubmitAnswersPayload {
 }
 
 export interface SubmitAnswersResponse {
+  resultCode: string;
   message: string;
 }
 
@@ -74,7 +75,10 @@ export const penilaianApi = baseApi.injectEndpoints({
     getQuestions: builder.query<PertanyaanResponse[], void>({
       query: () => "/api/data/pertanyaan",
     }),
-    submitAnswers: builder.mutation<SubmitAnswersResponse, SubmitAnswersPayload>({
+    submitAnswers: builder.mutation<
+      SubmitAnswersResponse,
+      SubmitAnswersPayload
+    >({
       query: (body) => ({ url: "/api/data/jawaban", method: "POST", body }),
     }),
   }),

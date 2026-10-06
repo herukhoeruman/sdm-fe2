@@ -82,12 +82,18 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
         return toast.error("Mohon menjawab semua pertanyaan!");
       }
 
-      await submitAnswers({ data: user }).unwrap();
-      toast.success("Jawaban berhasil disimpan");
-      router.push("/penilaian");
-    } catch (error) {
+      const res = await submitAnswers({ data: user }).unwrap();
+      if (res.resultCode === "00") {
+        router.replace("/penilaian");
+        toast.success("Jawaban berhasil disimpan!");
+      } else {
+        toast.error(`Gagal menyimpan jawaban, ${res.message}`);
+      }
+    } catch (error: any) {
       console.log(error);
-      toast.error("Gagal menyimpan jawaban");
+      toast.error(
+        `Gagal menyimpan jawaban, ${error.data?.message || error.message}`,
+      );
     }
   };
 
@@ -142,7 +148,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                 className="h-2 overflow-hidden rounded-full bg-muted"
               >
                 <div
-                  className="h-full rounded-full bg-primary transition-all"
+                  className="h-full rounded-full bg-emerald-500 transition-all"
                   style={{
                     width: `${pertanyaan.length ? (user.answers.length / pertanyaan.length) * 100 : 0}%`,
                   }}
