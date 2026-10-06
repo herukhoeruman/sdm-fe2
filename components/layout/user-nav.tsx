@@ -79,9 +79,8 @@ export const UserNav = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuItem onSelect={() => router.push("/profile")}>
+              Profil Saya
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

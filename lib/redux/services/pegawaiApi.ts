@@ -31,7 +31,7 @@ export interface PegawaiPayload {
 
 export interface UpdatePegawaiPayload {
   id: PegawaiId;
-  body: PegawaiPayload;
+  body: Omit<PegawaiPayload, "password"> & { password?: string };
 }
 
 export const pegawaiApi = baseApi.injectEndpoints({
@@ -50,7 +50,7 @@ export const pegawaiApi = baseApi.injectEndpoints({
     }),
     updatePegawai: builder.mutation<PegawaiResponse, UpdatePegawaiPayload>({
       query: ({ id, body }) => ({ url: `/api/pegawai/${id}`, method: "PUT", body }),
-      invalidatesTags: ["Pegawai"],
+      invalidatesTags: ["Pegawai", "Me", "Users"],
     }),
     deletePegawai: builder.mutation<void, PegawaiId>({
       query: (id) => ({ url: `/api/pegawai/${id}`, method: "DELETE" }),

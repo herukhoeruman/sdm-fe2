@@ -36,12 +36,17 @@ import {
 
 interface FormCreatePegawaiProps {
   initialData: Pegawai | null;
+  accountOnly?: boolean;
 }
 
-const formSchema = z.object({
+const passwordSchema = z
+  .string()
+  .min(4, { message: "password minimal 4 karakter" });
+
+const baseFormSchema = z.object({
   nama: z.string().min(1, { message: "nama tidak boleh kosong" }),
   email: z.string().email({ message: "email tidak valid" }),
-  password: z.string().min(4, { message: "password minimal 4 karakter" }),
+  password: passwordSchema,
   username: z.string().min(4, { message: "username minimal 4 karakter" }),
   parent: z.coerce.number(),
   divisi: z.string(),
@@ -51,26 +56,37 @@ const formSchema = z.object({
   validasiSdm: z.coerce.number(),
 });
 
-export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
-  const { data = [] } = useGetPegawaiQuery();
+export const FormCreatePegawai = ({ initialData, accountOnly = false }: FormCreatePegawaiProps) => {
+  const formSchema = baseFormSchema.extend({
+    password: initialData
+      ? passwordSchema.or(z.literal(""))
+      : passwordSchema.min(1, { message: "password wajib diisi" }),
+  });
+  const { data = [] } = useGetPegawaiQuery(undefined, { skip: accountOnly });
   const [createPegawai, createState] = useCreatePegawaiMutation();
   const [updatePegawai, updateState] = useUpdatePegawaiMutation();
   const loading = createState.isLoading || updateState.isLoading;
 
   const router = useRouter();
 
-  const options = data.map((pegawai) => ({
+  const options = (accountOnly && initialData ? [{ id: initialData.parent, nama: initialData.namaAtasan }] : data).map((pegawai) => ({
     value: pegawai.id.toString(),
     label: pegawai.nama,
   }));
 
-  const toastMessage = initialData ? "Pegawai updated." : "Pegawai created.";
+  const toastMessage = accountOnly ? "Informasi akun berhasil diperbarui." : initialData ? "Pegawai updated." : "Pegawai created.";
+  const returnPath = accountOnly ? "/profile" : "/pegawai";
   const action = initialData ? "Simpan Perubahan" : "Tambah Pegawai";
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(accountOnly ? formSchema.pick({
+      nama: true,
+      email: true,
+      username: true,
+      password: true,
+    }) : formSchema),
     defaultValues: initialData
-      ? { ...initialData, password: "" }
+      ? { ...initialData, validasiSdm: initialData.validasiSdm ?? 0, password: "" }
       : {
           nama: "",
           email: "",
@@ -91,29 +107,46 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
       if (!initialData) {
         await createPegawai(values).unwrap();
       } else {
-        await updatePegawai({ id: initialData.id, body: values }).unwrap();
+        const { password, ...pegawaiValues } = values;
+        const body = accountOnly ? {
+          ...pegawaiValues,
+          parent: initialData.parent,
+          divisi: initialData.divisi,
+          jabatan: initialData.jabatan,
+          namaAtasan: initialData.namaAtasan,
+          penilaian: initialData.penilaian,
+          validasiSdm: initialData.validasiSdm ?? 0,
+        } : pegawaiValues;
+        await updatePegawai({
+          id: initialData.id,
+          body: password ? { ...body, password } : body,
+        }).unwrap();
       }
 
       toast.success(toastMessage);
 
       router.refresh();
-      router.push("/pegawai");
+      router.push(returnPath);
     } catch (error) {
       console.log(error);
-      toast.error("Gagal generate data");
+      toast.error(accountOnly ? "Gagal memperbarui informasi akun." : "Gagal menyimpan data pegawai.");
     }
   };
 
   return (
     <div className="w-full max-w-5xl">
       <Form {...form}>
-        <form
-          className="space-y-6"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
-            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Informasi Akun</legend>
-            <p className="mb-5 text-sm text-muted-foreground">Lengkapi identitas dan akses akun pegawai.</p>
+        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+          <fieldset
+            disabled={loading}
+            className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6"
+          >
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">
+              Informasi Akun
+            </legend>
+            <p className="mb-5 text-sm text-muted-foreground">
+              Lengkapi identitas dan akses akun pegawai.
+            </p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -173,9 +206,12 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="min-w-0">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>
+                      Password {initialData ? "(opsional)" : "(wajib)"}
+                    </FormLabel>
                     <FormControl>
                       <PasswordInput
+                        aria-required={!initialData}
                         autoComplete="new-password"
                         disabled={loading}
                         placeholder="Password Pegawai"
@@ -184,20 +220,26 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                     </FormControl>
                     <FormDescription>
                       {initialData
-                        ? "Kosongkan jika tidak ingin mengganti password"
+                        ? "Kosongkan jika tidak ingin mengganti password. Password baru minimal 4 karakter."
                         : "Gunakan password minimal 4 karakter."}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-          </div>
+            </div>
           </fieldset>
 
-          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
-            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Informasi Pekerjaan</legend>
-            <p className="mb-5 text-sm text-muted-foreground">Atur divisi, jabatan, dan atasan pegawai.</p>
+          <fieldset
+            disabled={loading || accountOnly}
+            className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6"
+          >
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">
+              Informasi Pekerjaan
+            </legend>
+            <p className="mb-5 text-sm text-muted-foreground">
+              {accountOnly ? "Informasi pekerjaan hanya dapat diubah oleh SDM." : "Atur divisi, jabatan, dan atasan pegawai."}
+            </p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -207,7 +249,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                     <FormLabel>Atasan</FormLabel>
                     <FormControl>
                       <Combobox
-                        disabled={loading}
+                        disabled={loading || accountOnly}
                         options={options}
                         value={field.value.toString() || ""}
                         onChange={(value) => {
@@ -215,7 +257,8 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                           console.log(value);
                           form.setValue(
                             "namaAtasan",
-                            options.find((opt) => opt.value === value)?.label || "",
+                            options.find((opt) => opt.value === value)?.label ||
+                              "",
                           );
                         }}
                       />
@@ -232,7 +275,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                     <FormLabel>Divisi</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
+                        disabled={loading || accountOnly}
                         placeholder="Divisi Pegawai"
                         {...field}
                       />
@@ -249,7 +292,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                     <FormLabel>Jabatan</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
+                        disabled={loading || accountOnly}
                         placeholder="Jabatan Pegawai"
                         {...field}
                       />
@@ -262,7 +305,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                 control={form.control}
                 name="namaAtasan"
                 render={({ field }) => (
-                  <FormItem className="min-w-0">
+                  <FormItem className="min-w-0 hidden">
                     <FormLabel>Nama Atasan</FormLabel>
                     <FormControl>
                       <Input
@@ -275,13 +318,19 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                   </FormItem>
                 )}
               />
-
-          </div>
+            </div>
           </fieldset>
 
-          <fieldset disabled={loading} className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6">
-            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">Penilaian dan Validasi</legend>
-            <p className="mb-5 text-sm text-muted-foreground">Lengkapi penilaian dan status validasi SDM.</p>
+          <fieldset
+            disabled={loading || accountOnly}
+            className="min-w-0 rounded-xl border border-t-4 border-t-primary/60 bg-card p-4 text-card-foreground shadow-sm shadow-primary/5 sm:p-6"
+          >
+            <legend className="rounded-lg bg-accent px-3 py-1 text-base font-semibold text-accent-foreground">
+              Penilaian dan Validasi
+            </legend>
+            <p className="mb-5 text-sm text-muted-foreground">
+              {accountOnly ? "Penilaian dan validasi hanya dapat diubah oleh SDM." : "Lengkapi penilaian dan status validasi SDM."}
+            </p>
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -291,7 +340,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                     <FormLabel>Penilaian</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
+                        disabled={loading || accountOnly}
                         placeholder="Penilaian Pegawai"
                         type="number"
                         {...field}
@@ -308,7 +357,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                   <FormItem className="min-w-0">
                     <FormLabel>Validasi SDM</FormLabel>
                     <Select
-                      disabled={loading}
+                      disabled={loading || accountOnly}
                       onValueChange={field.onChange}
                       defaultValue={field.value.toString()}
                     >
@@ -326,8 +375,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
                   </FormItem>
                 )}
               />
-
-          </div>
+            </div>
           </fieldset>
 
           <div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:justify-end">
@@ -335,7 +383,7 @@ export const FormCreatePegawai = ({ initialData }: FormCreatePegawaiProps) => {
               disabled={loading}
               type="button"
               variant="outline"
-              onClick={() => router.push("/pegawai")}
+              onClick={() => router.push(returnPath)}
             >
               Batal
             </Button>
