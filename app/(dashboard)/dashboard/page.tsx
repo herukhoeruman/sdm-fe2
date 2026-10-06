@@ -113,10 +113,10 @@ const DashboardPage = () => {
                 />
                 {samplePeriod}
               </Badge>
-              <Badge variant="secondary">Data Sample</Badge>
+              {/* <Badge variant="secondary">Data Sample</Badge> */}
             </div>
           </div>
-          <div className="w-full space-y-2 lg:w-44">
+          {/* <div className="w-full space-y-2 lg:w-44">
             <label
               htmlFor="dashboard-preview"
               className="text-xs font-medium text-muted-foreground"
@@ -136,10 +136,10 @@ const DashboardPage = () => {
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
 
-        <p className="text-xs text-muted-foreground">
+        {/* <p className="text-xs text-muted-foreground">
           Angka, tugas, dan tenggat berikut merupakan contoh untuk preview
           dashboard. Akses cepat membuka halaman aplikasi sesuai hak akses Anda.
         </p>
@@ -299,7 +299,7 @@ const DashboardPage = () => {
               })}
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         <section className="space-y-4">
           <h2 className="text-lg font-semibold text-primary">Akses Cepat</h2>
