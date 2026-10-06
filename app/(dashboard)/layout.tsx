@@ -33,7 +33,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <Header />
       <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <main className="h-full min-w-0 w-full bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_60%)] pt-16">{children}</main>
+        <main className="h-full min-w-0 w-full bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_60%)] pt-16">
+          {children}
+        </main>
       </div>
     </>
   );

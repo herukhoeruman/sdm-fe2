@@ -9,8 +9,9 @@ import { ModalPovider } from "@/components/providers/modal-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sistem Informasi Penilaian Kompetensi Individu",
-  description: "PT. Gerbang Sinergi Prima",
+  title: "SIPKI",
+  description:
+    "Sistem Informasi Penilaian Kompetensi Individu PT. Gerbang Sinergi Prima",
   icons: {
     icon: "/logo.png",
   },
