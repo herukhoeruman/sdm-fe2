@@ -10,6 +10,11 @@ interface AlertModalProps {
   onClose: () => void;
   onConfirm: () => void;
   loading: boolean;
+  title?: string;
+  description?: string;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  loadingLabel?: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -17,6 +22,11 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onClose,
   onConfirm,
   loading,
+  title = "Apakah Anda yakin?",
+  description = "Tindakan ini tidak dapat dibatalkan.",
+  cancelLabel = "Cancel",
+  confirmLabel = "Continue",
+  loadingLabel,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -28,17 +38,19 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
   return (
     <Modal
-      title="Apakah Anda yakin?"
-      description="Tindakan ini tidak dapat dibatalkan."
+      title={title}
+      description={description}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (!loading) onClose();
+      }}
     >
       <div className="pt-6 space-x-2 flex items-center justify-end w-full">
         <Button disabled={loading} variant="outline" onClick={onClose}>
-          Cancel
+          {cancelLabel}
         </Button>
         <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Continue
+          {loading && loadingLabel ? loadingLabel : confirmLabel}
         </Button>
       </div>
     </Modal>
