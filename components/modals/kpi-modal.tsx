@@ -821,7 +821,7 @@ export const KpiModal = () => {
           </Form>
         </div>
 
-        <DialogFooter className="mt-2 sm:col-span-2">
+        <DialogFooter className="mt-2 gap-2 sm:col-span-2">
           <Button
             type="button"
             variant="outline"

@@ -15,7 +15,11 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft01Icon, ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Search01Icon,
+} from "@hugeicons/core-free-icons";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,9 +58,15 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div className="relative w-full sm:max-w-sm">
-        <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.5} className="absolute left-3 top-2.5 text-muted-foreground" aria-hidden="true" />
+        <HugeiconsIcon
+          icon={Search01Icon}
+          size={16}
+          strokeWidth={1.5}
+          className="absolute left-3 top-2.5 text-muted-foreground"
+          aria-hidden="true"
+        />
         <Input
           className="pl-9"
           aria-label="Cari nama KPI"
@@ -92,14 +102,20 @@ export function DataTable<TData, TValue>({
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   Data KPI tidak ditemukan.
                 </TableCell>
               </TableRow>
@@ -114,7 +130,7 @@ export function DataTable<TData, TValue>({
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm">
-            Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
+            {table.getState().pagination.pageIndex + 1} dari{" "}
             {Math.max(table.getPageCount(), 1)}
           </span>
           <Button
@@ -124,7 +140,12 @@ export function DataTable<TData, TValue>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Halaman sebelumnya</span>
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={18} strokeWidth={1.5} aria-hidden="true" />
+            <HugeiconsIcon
+              icon={ArrowLeft01Icon}
+              size={18}
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
           </Button>
           <Button
             size="icon"
@@ -133,7 +154,12 @@ export function DataTable<TData, TValue>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Halaman berikutnya</span>
-            <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={1.5} aria-hidden="true" />
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              size={18}
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
           </Button>
         </div>
       </div>
