@@ -232,7 +232,7 @@ const PersonalIdPage = ({ params }: { params: { personId: string } }) => {
                         >
                           {String.fromCharCode(65 + answerIndex)}
                         </span>
-                        <span className="min-w-0 break-words pt-1 text-sm leading-relaxed sm:text-base">
+                        <span className="min-w-0 break-words text-sm leading-relaxed sm:text-base">
                           {jawaban.jawaban}
                         </span>
                       </label>
