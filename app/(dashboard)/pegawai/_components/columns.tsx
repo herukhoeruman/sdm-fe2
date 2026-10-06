@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -97,6 +98,24 @@ export const columns: ColumnDef<Pegawai>[] = [
           Jabatan
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    id: "roles",
+    accessorFn: (pegawai) => pegawai.roles?.map((role) => typeof role === "string" ? role : role.name).join(", ") ?? "",
+    header: "Role",
+    cell: ({ row }) => {
+      const roles = row.original.roles;
+      if (!roles) return <span className="text-muted-foreground">Belum tersedia</span>;
+      if (!roles.length) return <span className="text-muted-foreground">Tanpa role</span>;
+      return (
+        <div className="flex flex-wrap gap-1">
+          {roles.map((role) => {
+            const name = typeof role === "string" ? role : role.name;
+            return <Badge key={name} variant="secondary">{name}</Badge>;
+          })}
+        </div>
       );
     },
   },

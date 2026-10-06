@@ -48,7 +48,7 @@ export const userApi = baseApi.injectEndpoints({
         method: "PUT",
         body: { roles },
       }),
-      invalidatesTags: ["Users", "Roles"],
+      invalidatesTags: ["Users", "Roles", "Pegawai", "Me"],
     }),
   }),
 });

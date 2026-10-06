@@ -40,7 +40,7 @@ const formSchema = z.object({
 export const UserModal = () => {
   const { isOpen, onClose, data } = useUserModal();
 
-  const { data: roles = [] } = useGetRolesQuery(undefined, {
+  const { data: roles = [], isFetching: rolesLoading, isError: rolesError, refetch } = useGetRolesQuery(undefined, {
     skip: !isOpen,
   });
   const [updateUserRoles, { isLoading: loading }] =
@@ -52,44 +52,48 @@ export const UserModal = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roles: dataRoles,
+      roles: dataRoles ?? [],
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!data || loading || rolesLoading || rolesError) return;
     try {
       const response = await updateUserRoles({
-        id: data!.id,
+        id: data.id,
         roles: values.roles,
       }).unwrap();
 
       toast.success(response.message);
       onClose();
     } catch (error) {
-      toast.error("Something went wrong!");
+      toast.error("Gagal memperbarui role. Silakan coba lagi.");
     }
   };
 
   useEffect(() => {
     if (data?.roles) {
       const dataRoles = data.roles.map((role) => role.name);
-      form.setValue("roles", dataRoles);
+      form.reset({ roles: dataRoles });
     }
   }, [data, form]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="text-black bg-white">
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !loading) onClose(); }}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update Roles for {data?.nama}</DialogTitle>
+          <DialogTitle>Update Role — {data?.nama}</DialogTitle>
           <DialogDescription>
-            Pilih roles yang ingin diberikan kepada user ini.
+            Pilih role yang ingin diberikan kepada user ini.
           </DialogDescription>
         </DialogHeader>
         <div className="h-full">
           <div className="space-y-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
+                {rolesLoading && <p role="status" className="mb-4 text-sm text-muted-foreground">Memuat pilihan role...</p>}
+                {rolesError && <div role="alert" className="mb-4 space-y-2 text-sm text-destructive">Gagal memuat pilihan role. <Button type="button" variant="outline" size="sm" onClick={() => refetch()}>Coba Lagi</Button></div>}
+                <fieldset disabled={loading || rolesLoading || rolesError} className="min-w-0">
                 <FormField
                   control={form.control}
                   name="roles"
@@ -122,6 +126,7 @@ export const UserModal = () => {
                     </FormItem>
                   )}
                 />
+                </fieldset>
 
                 <div className="pt-6 space-x-2 flex items-center justify-end w-full">
                   <Button
@@ -130,10 +135,10 @@ export const UserModal = () => {
                     variant="outline"
                     onClick={onClose}
                   >
-                    Cancel
+                    Batal
                   </Button>
-                  <Button disabled={loading} type="submit">
-                    Update
+                  <Button disabled={loading || rolesLoading || rolesError || !data} type="submit">
+                    {loading ? "Menyimpan..." : "Simpan Role"}
                   </Button>
                 </div>
               </form>

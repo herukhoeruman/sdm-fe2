@@ -1,8 +1,10 @@
 import { baseApi } from "./baseApi";
+import type { RoleResponse } from "./userApi";
 
 export type PegawaiId = string | number;
 
 export interface PegawaiResponse {
+  roles?: (RoleResponse | string)[];
   id: number;
   email: string;
   password: string;

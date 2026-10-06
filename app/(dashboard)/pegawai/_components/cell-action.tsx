@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, Eye, MoreHorizontal, Shield, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
 import {
@@ -18,6 +18,7 @@ import { Pegawai } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
 import Link from "next/link";
 import { useDeletePegawaiMutation } from "@/lib/redux";
+import { useUserModal } from "@/hooks/use-user-modal";
 
 interface CellActionProps {
   data: Pegawai;
@@ -25,6 +26,7 @@ interface CellActionProps {
 
 export const CellAction = ({ data }: CellActionProps) => {
   const router = useRouter();
+  const userModal = useUserModal();
   const params = useParams();
 
   const [open, setOpen] = useState(false);
@@ -75,6 +77,17 @@ export const CellAction = ({ data }: CellActionProps) => {
           >
             <Edit className="w-4 h-4 mr-2" />
             Update
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!data.roles}
+            onSelect={() => userModal.onOpen({
+              id: data.id,
+              nama: data.nama,
+              roles: (data.roles ?? []).map((role, index) => typeof role === "string" ? { id: index, name: role } : role),
+            })}
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            Update Role
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="w-4 h-4 mr-2" />

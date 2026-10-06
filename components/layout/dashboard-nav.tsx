@@ -445,13 +445,13 @@ const routes: DashboardNavItem[] = [
     label: "Pegawai",
     roles: ["ROLE_SDM"],
   },
-  {
-    title: "Users",
-    href: "/users",
-    icon: "userCog",
-    label: "Users",
-    roles: ["ROLE_ADMIN"],
-  },
+  // {
+  //   title: "Users",
+  //   href: "/users",
+  //   icon: "userCog",
+  //   label: "Users",
+  //   roles: ["ROLE_ADMIN"],
+  // },
 ];
 
 export function DashboardNav({ items, setOpen }: DashboardNavProps) {
@@ -479,7 +479,9 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
       return null;
     }
 
-    const icon = navigationIcons[item.icon as keyof typeof navigationIcons] ?? ArrowRight01Icon;
+    const icon =
+      navigationIcons[item.icon as keyof typeof navigationIcons] ??
+      ArrowRight01Icon;
 
     // =========================
     // Menu dengan submenu
@@ -516,7 +518,13 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
               }))
             }
           >
-            <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} className="mr-2 shrink-0" aria-hidden="true" />
+            <HugeiconsIcon
+              icon={icon}
+              size={20}
+              strokeWidth={1.5}
+              className="mr-2 shrink-0"
+              aria-hidden="true"
+            />
 
             <span className="flex-1 text-left">{item.title}</span>
 
@@ -575,11 +583,18 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
         <span
           className={cn(
             "group flex items-center rounded-lg border-l-4 border-transparent px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-accent-foreground",
-            (path === item.href || path.startsWith(`${item.href}/`)) && "border-primary bg-accent text-accent-foreground",
+            (path === item.href || path.startsWith(`${item.href}/`)) &&
+              "border-primary bg-accent text-accent-foreground",
             item.disabled && "cursor-not-allowed opacity-80",
           )}
         >
-          <HugeiconsIcon icon={icon} size={20} strokeWidth={1.5} className="mr-2 shrink-0" aria-hidden="true" />
+          <HugeiconsIcon
+            icon={icon}
+            size={20}
+            strokeWidth={1.5}
+            className="mr-2 shrink-0"
+            aria-hidden="true"
+          />
 
           <span>{item.title}</span>
         </span>

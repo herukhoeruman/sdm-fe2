@@ -1,50 +1,24 @@
-import { User } from "@/app/(dashboard)/users/_components/columns";
+import type { UserResponse } from "@/lib/redux/services/userApi";
 import { create } from "zustand";
 
 export interface Role {
   role: string;
 }
 
+type RoleUser = Pick<UserResponse, "id" | "nama" | "roles">;
+
 interface useUserModalStore {
-  data: User | null;
-  roles: { role: string }[];
+  data: RoleUser | null;
+  roles: Role[];
   isOpen: boolean;
-  onOpen: (data?: User, roles?: Role[]) => void;
+  onOpen: (data: RoleUser, roles?: Role[]) => void;
   onClose: () => void;
 }
 
 export const useUserModal = create<useUserModalStore>((set) => ({
   isOpen: false,
-  data: {
-    id: 0,
-    nama: "",
-    email: "",
-    divisi: "",
-    jabatan: "",
-    roles: [],
-    nama_atasan: "",
-    parent: 0,
-    penilaian: false,
-    username: "",
-    validasisdm: false,
-  },
+  data: null,
   roles: [],
-  // onOpen: () => set({ isOpen: true }),
-  onOpen: (
-    data = {
-      id: 0,
-      nama: "",
-      email: "",
-      divisi: "",
-      jabatan: "",
-      roles: [],
-      nama_atasan: "",
-      parent: 0,
-      penilaian: false,
-      username: "",
-      validasisdm: false,
-    },
-    roles = []
-  ) => set({ isOpen: true, data, roles }), // Open the modal
+  onOpen: (data, roles = []) => set({ isOpen: true, data, roles }),
   onClose: () => set({ isOpen: false }),
 }));

@@ -5,12 +5,19 @@ import { UserGroupIcon } from "@hugeicons/core-free-icons";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useGetPegawaiQuery } from "@/lib/redux";
+import { useGetPegawaiQuery, useGetUsersQuery } from "@/lib/redux";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
 
 const MasterPegawaiPage = () => {
   const { data = [], isLoading, isError, refetch } = useGetPegawaiQuery();
+  const needsRoles = data.some((pegawai) => !pegawai.roles);
+  const users = useGetUsersQuery(undefined, { skip: !needsRoles });
+  const rolesById = new Map(users.data?.map((user) => [user.id, user.roles]));
+  const pegawaiWithRoles = data.map((pegawai) => ({
+    ...pegawai,
+    roles: pegawai.roles ?? rolesById.get(pegawai.id),
+  }));
 
   return (
     <ScrollArea className="h-full">
@@ -24,6 +31,12 @@ const MasterPegawaiPage = () => {
           <p className="text-sm text-muted-foreground">Kelola identitas, informasi pekerjaan, dan data pegawai.</p>
         </div>
         <section className="min-w-0 space-y-5 rounded-xl border bg-card p-4 shadow-sm sm:p-6">
+          {needsRoles && users.isError && (
+            <div className="flex flex-wrap items-center gap-3 text-sm text-destructive" role="alert">
+              Role pegawai gagal dimuat.
+              <Button variant="outline" size="sm" onClick={() => users.refetch()}>Coba Lagi</Button>
+            </div>
+          )}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
             <h2 className="text-lg font-semibold text-primary">Daftar Pegawai</h2>
             {!isLoading && !isError && <span className="rounded-lg bg-accent px-3 py-1 text-sm font-medium text-primary">{data.length} data</span>}
@@ -39,7 +52,7 @@ const MasterPegawaiPage = () => {
               <Button variant="outline" onClick={() => refetch()}>Coba Lagi</Button>
             </div>
           ) : (
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={pegawaiWithRoles} />
           )}
         </section>
       </div>
